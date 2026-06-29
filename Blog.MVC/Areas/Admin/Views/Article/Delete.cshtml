@@ -1,0 +1,18 @@
+@model ArticleDetailDto
+@{
+    ViewData["Title"] = "删除文章";
+}
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        <p class="mb-1">确定要删除以下文章吗？</p>
+        <h5 class="mb-3">@Model.Title</h5>
+        <p class="text-muted">分类：@Model.CategoryName</p>
+        <form asp-action="Delete" method="post">
+            <input type="hidden" name="id" value="@Model.Id" />
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-danger">确认删除</button>
+            <a class="btn btn-outline-secondary" asp-action="Index">取消</a>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,57 @@
+@model ArticleFormViewModel
+
+<div class="row g-3">
+    <div class="col-md-8">
+        <div class="mb-3">
+            <label asp-for="Title" class="form-label"></label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Summary" class="form-label"></label>
+            <textarea asp-for="Summary" class="form-control" rows="2"></textarea>
+            <span asp-validation-for="Summary" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Content" class="form-label"></label>
+            <div id="article-editor">
+                <textarea asp-for="Content" style="display:none;"></textarea>
+            </div>
+            <span asp-validation-for="Content" class="text-danger"></span>
+            <div class="form-text">支持 Markdown 语法，可直接插入图片（上传至 MinIO）。</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="mb-3">
+            <label asp-for="Status" class="form-label"></label>
+            <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<ArticleStatus>()"></select>
+        </div>
+        <div class="mb-3">
+            <label asp-for="CategoryId" class="form-label"></label>
+            <select asp-for="CategoryId" class="form-select" asp-items="Model.Categories"></select>
+            <span asp-validation-for="CategoryId" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">标签</label>
+            <div class="border rounded p-3 bg-light">
+                @foreach (var tag in Model.Tags)
+                {
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="SelectedTagIds" value="@tag.Id"
+                               id="tag-@tag.Id" @(Model.SelectedTagIds.Contains(tag.Id) ? "checked" : "") />
+                        <label class="form-check-label" for="tag-@tag.Id">@tag.Name</label>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Slug" class="form-label"></label>
+            <input asp-for="Slug" class="form-control" placeholder="留空则自动生成" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="CoverImage" class="form-label"></label>
+            <input asp-for="CoverImage" class="form-control" placeholder="https://..." />
+            <div class="form-text">也可在 Markdown 正文中插入图片</div>
+        </div>
+    </div>
+</div>

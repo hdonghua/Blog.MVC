@@ -1,0 +1,35 @@
+<link rel="stylesheet" href="~/lib/editor.md/css/editormd.min.css" asp-append-version="true" />
+<script src="~/lib/editor.md/editormd.min.js" asp-append-version="true"></script>
+<script src="~/lib/editor.md/languages/zh-tw.min.js" asp-append-version="true"></script>
+<script>
+    $(function () {
+        const uploadUrl = '/api/File/upload/editor-image?folder=articles';
+
+        // 注意：不要写 lang: 'zh-tw'。字符串会覆盖 defaults.lang 对象，导致 toolbar 报错。
+        // zh-tw.min.js 已在上方把语言包写入 editormd.defaults.lang。
+        const articleEditor = editormd('article-editor', {
+            width: '100%',
+            height: 520,
+            path: '@Url.Content("~/lib/editor.md/lib/")',
+            pluginPath: '@Url.Content("~/lib/editor.md/plugins/")',
+            placeholder: '使用 Markdown 撰写文章内容...',
+            codeFold: true,
+            searchReplace: true,
+            emoji: true,
+            taskList: true,
+            toc: true,
+            tex: false,
+            flowChart: false,
+            sequenceDiagram: false,
+            imageUpload: true,
+            imageFormats: ['jpg', 'jpeg', 'gif', 'png', 'bmp', 'webp'],
+            imageUploadURL: uploadUrl
+        });
+
+        $('form').on('submit', function () {
+            if (articleEditor) {
+                $('#Content').val(articleEditor.getMarkdown());
+            }
+        });
+    });
+</script>

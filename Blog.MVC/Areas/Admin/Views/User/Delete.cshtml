@@ -1,0 +1,27 @@
+@model UserDto
+@{
+    ViewData["Title"] = "删除用户";
+}
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="alert alert-warning">确定要删除用户 <strong>@Model.UserName</strong> 吗？此操作不可恢复。</div>
+                <dl class="row mb-4">
+                    <dt class="col-sm-4">邮箱</dt>
+                    <dd class="col-sm-8">@Model.Email</dd>
+                    <dt class="col-sm-4">角色</dt>
+                    <dd class="col-sm-8">@Model.Role</dd>
+                </dl>
+                <form asp-action="Delete" asp-route-id="@Model.Id" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-danger">确认删除</button>
+                        <a class="btn btn-outline-secondary" asp-action="Index">取消</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

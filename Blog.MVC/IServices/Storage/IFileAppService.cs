@@ -1,0 +1,20 @@
+using Blog.MVC.IServices.Storage.Dtos;
+
+namespace Blog.MVC.IServices.Storage;
+
+public interface IFileAppService
+{
+    Task<FileUploadResultDto> UploadAsync(
+        Stream content,
+        string fileName,
+        string contentType,
+        long size,
+        string? folder = null,
+        CancellationToken cancellationToken = default);
+
+    Task DeleteAsync(string objectKey, CancellationToken cancellationToken = default);
+
+    Task<BlobObjectResult> GetAsync(string objectKey, CancellationToken cancellationToken = default);
+
+    string BuildProxyUrl(string objectKey);
+}

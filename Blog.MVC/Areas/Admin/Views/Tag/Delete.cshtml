@@ -1,0 +1,16 @@
+@model TagDto
+@{
+    ViewData["Title"] = "删除标签";
+}
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        <p>确定删除标签 <strong>@Model.Name</strong> 吗？（当前关联 @Model.ArticleCount 篇文章）</p>
+        <form asp-action="Delete" method="post">
+            <input type="hidden" name="id" value="@Model.Id" />
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-danger">确认删除</button>
+            <a class="btn btn-outline-secondary" asp-action="Index">取消</a>
+        </form>
+    </div>
+</div>

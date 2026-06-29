@@ -1,0 +1,24 @@
+@model ArticleFormViewModel
+@{
+    ViewData["Title"] = "编辑文章";
+}
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Id" />
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <partial name="_ArticleFormFields" model="Model" />
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-primary">保存</button>
+                <a class="btn btn-outline-secondary" asp-action="Index">返回</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="_EditorMdScripts" />
+}

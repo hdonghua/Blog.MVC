@@ -1,0 +1,73 @@
+@{
+    var isLoginPage = ViewContext.RouteData.Values["controller"]?.ToString() == "Account"
+        && ViewContext.RouteData.Values["action"]?.ToString() == "Login";
+}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - 博客后台</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+</head>
+<body class="@(isLoginPage ? "admin-login-page" : "admin-body")">
+@if (isLoginPage)
+{
+    @RenderBody()
+}
+else
+{
+    <div class="admin-wrapper d-flex">
+        <aside class="admin-sidebar bg-dark text-white p-3">
+            <div class="admin-brand mb-4">
+                <a class="text-white text-decoration-none fw-bold" asp-area="Admin" asp-controller="Home" asp-action="Index">博客后台</a>
+            </div>
+            <nav class="nav flex-column gap-1">
+                <a class="nav-link text-white-50" asp-area="Admin" asp-controller="Home" asp-action="Index">仪表盘</a>
+                <a class="nav-link text-white-50" asp-area="Admin" asp-controller="Article" asp-action="Index">文章管理</a>
+                <a class="nav-link text-white-50" asp-area="Admin" asp-controller="Category" asp-action="Index">分类管理</a>
+                <a class="nav-link text-white-50" asp-area="Admin" asp-controller="Tag" asp-action="Index">标签管理</a>
+                @if (User.IsInRole(nameof(UserRole.Admin)))
+                {
+                    <a class="nav-link text-white-50" asp-area="Admin" asp-controller="User" asp-action="Index">用户管理</a>
+                }
+                <a class="nav-link text-white-50" asp-area="" asp-controller="Home" asp-action="Index" target="_blank">访问前台</a>
+            </nav>
+        </aside>
+        <div class="admin-content flex-grow-1">
+            <header class="admin-header bg-white border-bottom px-4 py-3 d-flex justify-content-between align-items-center">
+                <h1 class="h5 mb-0">@ViewData["Title"]</h1>
+                <div class="d-flex align-items-center gap-3">
+                    <span class="text-muted small">@User.Identity?.Name</span>
+                    <form asp-area="Admin" asp-controller="Account" asp-action="Logout" method="post">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-outline-secondary btn-sm">退出</button>
+                    </form>
+                </div>
+            </header>
+            <main class="p-4">
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        @TempData["Success"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        @TempData["Error"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+}
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
