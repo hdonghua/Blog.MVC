@@ -1,0 +1,28 @@
+@model Blog.MVC.IServices.Blog.Dtos.ArticleListDto
+
+<article class="article-card">
+    <div class="article-card-body">
+        <div class="article-card-meta">
+            <span class="article-category">@Model.CategoryName</span>
+            <time datetime="@((Model.PublishedTime ?? Model.CreationTime).ToString("yyyy-MM-dd"))">
+                @((Model.PublishedTime ?? Model.CreationTime).ToLocalTime().ToString("yyyy-MM-dd"))
+            </time>
+        </div>
+        <h2 class="article-card-title">
+            <a asp-controller="Blog" asp-action="Detail" asp-route-slug="@Model.Slug">@Model.Title</a>
+        </h2>
+        @if (!string.IsNullOrWhiteSpace(Model.AuthorName))
+        {
+            <div class="article-card-author">@Model.AuthorName</div>
+        }
+        @if (Model.Tags.Count > 0)
+        {
+            <div class="article-card-tags">
+                @foreach (var tag in Model.Tags)
+                {
+                    <span class="article-tag">#@tag</span>
+                }
+            </div>
+        }
+    </div>
+</article>

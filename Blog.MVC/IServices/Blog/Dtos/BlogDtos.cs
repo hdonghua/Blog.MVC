@@ -118,6 +118,8 @@ public class ArticleDetailDto
     public DateTime? PublishedTime { get; set; }
 
     public List<long> TagIds { get; set; } = [];
+
+    public List<string> Tags { get; set; } = [];
 }
 
 public class CreateArticleDto

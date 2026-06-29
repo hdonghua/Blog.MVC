@@ -83,8 +83,6 @@ public class ArticleFormViewModel
 
 public class DashboardViewModel
 {
-    public int UserCount { get; set; }
-
     public int ArticleCount { get; set; }
 
     public int CategoryCount { get; set; }

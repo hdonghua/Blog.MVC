@@ -36,11 +36,8 @@ else
                 <a class="@NavClass("Article")" asp-area="Admin" asp-controller="Article" asp-action="Index">文章管理</a>
                 <a class="@NavClass("Category")" asp-area="Admin" asp-controller="Category" asp-action="Index">分类管理</a>
                 <a class="@NavClass("Tag")" asp-area="Admin" asp-controller="Tag" asp-action="Index">标签管理</a>
-                @if (User.IsInRole(nameof(UserRole.Admin)))
-                {
-                    <div class="nav-section">系统</div>
-                    <a class="@NavClass("User")" asp-area="Admin" asp-controller="User" asp-action="Index">用户管理</a>
-                }
+                <div class="nav-section">系统</div>
+                <a class="@NavClass("User")" asp-area="Admin" asp-controller="User" asp-action="Index">账号设置</a>
                 <div class="nav-section">外链</div>
                 <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index" target="_blank">访问前台</a>
             </nav>

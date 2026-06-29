@@ -1,35 +1,22 @@
-@model UserFormViewModel
-
-<div class="mb-3">
-    <label asp-for="UserName" class="form-label"></label>
-    <input asp-for="UserName" class="form-control" />
-    <span asp-validation-for="UserName" class="text-danger"></span>
-</div>
-<div class="mb-3">
-    <label asp-for="Email" class="form-label"></label>
-    <input asp-for="Email" class="form-control" />
-    <span asp-validation-for="Email" class="text-danger"></span>
-</div>
-<div class="mb-3">
-    <label asp-for="Password" class="form-label"></label>
-    <input asp-for="Password" class="form-control" />
-    <span asp-validation-for="Password" class="text-danger"></span>
-</div>
-<div class="mb-3">
-    <label asp-for="DisplayName" class="form-label"></label>
-    <input asp-for="DisplayName" class="form-control" />
-    <span asp-validation-for="DisplayName" class="text-danger"></span>
-</div>
-<div class="mb-3">
-    <label asp-for="Role" class="form-label"></label>
-    <select asp-for="Role" class="form-select">
-        <option value="Admin">Admin</option>
-        <option value="Author">Author</option>
-        <option value="Reader">Reader</option>
-    </select>
-    <span asp-validation-for="Role" class="text-danger"></span>
-</div>
-<div class="mb-3 form-check">
-    <input asp-for="IsActive" class="form-check-input" />
-    <label asp-for="IsActive" class="form-check-label"></label>
-</div>
+@model UserFormViewModel
+
+<div class="mb-3">
+    <label asp-for="UserName" class="form-label"></label>
+    <input asp-for="UserName" class="form-control" />
+    <span asp-validation-for="UserName" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="Email" class="form-label"></label>
+    <input asp-for="Email" class="form-control" />
+    <span asp-validation-for="Email" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="Password" class="form-label"></label>
+    <input asp-for="Password" class="form-control" />
+    <span asp-validation-for="Password" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="DisplayName" class="form-label"></label>
+    <input asp-for="DisplayName" class="form-control" />
+    <span asp-validation-for="DisplayName" class="text-danger"></span>
+</div>

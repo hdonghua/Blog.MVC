@@ -44,7 +44,7 @@ public class AccountController : Controller
         }
 
         var user = await _userAppService.FindByUserNameAsync(model.UserName);
-        if (user == null || !user.IsActive || !_userAppService.VerifyPassword(user, model.Password))
+        if (user == null || !_userAppService.VerifyPassword(user, model.Password))
         {
             ModelState.AddModelError(string.Empty, "用户名或密码错误");
             return View(model);
@@ -53,8 +53,7 @@ public class AccountController : Controller
         var claims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new(ClaimTypes.Name, user.UserName),
-            new(ClaimTypes.Role, user.Role.ToString())
+            new(ClaimTypes.Name, user.UserName)
         };
 
         if (!string.IsNullOrWhiteSpace(user.DisplayName))

@@ -8,19 +8,11 @@ public interface IUserAppService
 {
     Task<PagedResult<UserDto>> GetPagedListAsync(int page = 1, int pageSize = PaginationHelper.DefaultPageSize, CancellationToken cancellationToken = default);
 
-    Task<int> GetCountAsync(CancellationToken cancellationToken = default);
-
-    Task<List<UserDto>> GetListAsync(CancellationToken cancellationToken = default);
-
     Task<UserDto?> GetAsync(long id, CancellationToken cancellationToken = default);
 
     Task<AppUser?> FindByUserNameAsync(string userName, CancellationToken cancellationToken = default);
 
-    Task CreateAsync(CreateUserDto input, CancellationToken cancellationToken = default);
-
     Task UpdateAsync(UpdateUserDto input, CancellationToken cancellationToken = default);
-
-    Task DeleteAsync(long id, CancellationToken cancellationToken = default);
 
     bool VerifyPassword(AppUser user, string password);
 }

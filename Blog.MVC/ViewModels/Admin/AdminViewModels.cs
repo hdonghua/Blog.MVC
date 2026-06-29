@@ -40,12 +40,4 @@ public class UserFormViewModel
     [StringLength(50)]
     [Display(Name = "显示名称")]
     public string? DisplayName { get; set; }
-
-    [Required(ErrorMessage = "请选择角色")]
-    [Display(Name = "角色")]
-    public string Role { get; set; } = "Author";
-
-    [Display(Name = "启用")]
-    public bool IsActive { get; set; } = true;
 }
-

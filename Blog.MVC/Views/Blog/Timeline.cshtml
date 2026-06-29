@@ -1,0 +1,53 @@
+@model TimelineViewModel
+@{
+    ViewData["Title"] = "时间线";
+}
+
+<section class="page-hero">
+    <div class="container site-container">
+        <h1>文章时间线</h1>
+        <p>按发布时间纵览全部博客文章。</p>
+    </div>
+</section>
+
+<section class="section-block">
+    <div class="container site-container site-container-narrow">
+        @if (Model.Groups.Count == 0)
+        {
+            <div class="empty-state">
+                <p>暂无已发布文章。</p>
+            </div>
+        }
+        else
+        {
+            <div class="timeline">
+                @foreach (var group in Model.Groups)
+                {
+                    <div class="timeline-group">
+                        <div class="timeline-label">@group.Label</div>
+                        <div class="timeline-items">
+                            @foreach (var article in group.Articles)
+                            {
+                                <a class="timeline-item" asp-controller="Blog" asp-action="Detail" asp-route-slug="@article.Slug">
+                                    <div class="timeline-item-date">
+                                        @((article.PublishedTime ?? article.CreationTime).ToLocalTime().ToString("MM-dd"))
+                                    </div>
+                                    <div class="timeline-item-body">
+                                        <h3>@article.Title</h3>
+                                        <div class="timeline-item-meta">
+                                            <span>@article.CategoryName</span>
+                                            @if (!string.IsNullOrWhiteSpace(article.AuthorName))
+                                            {
+                                                <span>@article.AuthorName</span>
+                                            }
+                                        </div>
+                                    </div>
+                                </a>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>

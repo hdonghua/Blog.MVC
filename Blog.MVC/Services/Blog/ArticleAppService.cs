@@ -94,6 +94,7 @@ public class ArticleAppService : IArticleAppService, IScopedDependency
             .Include(x => x.Category)
             .Include(x => x.Author)
             .Include(x => x.ArticleTags)
+                .ThenInclude(x => x.Tag)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
         if (article == null)
@@ -116,8 +117,86 @@ public class ArticleAppService : IArticleAppService, IScopedDependency
             Status = article.Status.ToString(),
             ViewCount = article.ViewCount,
             PublishedTime = article.PublishedTime,
-            TagIds = article.ArticleTags.Select(x => x.TagId).ToList()
+            TagIds = article.ArticleTags.Select(x => x.TagId).ToList(),
+            Tags = article.ArticleTags.Select(x => x.Tag!.Name).ToList()
         };
+    }
+
+    public async Task<PagedResult<ArticleListDto>> GetPublishedPagedListAsync(int page = 1, int pageSize = PaginationHelper.DefaultPageSize, CancellationToken cancellationToken = default)
+    {
+        (page, pageSize) = PaginationHelper.Normalize(page, pageSize);
+
+        var query = PublishedArticlesQuery();
+        var totalCount = await query.CountAsync(cancellationToken);
+        var items = await query
+            .OrderByDescending(x => x.PublishedTime ?? x.CreationTime)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(x => MapToListDto(x))
+            .ToListAsync(cancellationToken);
+
+        return new PagedResult<ArticleListDto>
+        {
+            Items = items,
+            TotalCount = totalCount,
+            Page = page,
+            PageSize = pageSize
+        };
+    }
+
+    public async Task<List<ArticleListDto>> GetPublishedListAsync(CancellationToken cancellationToken = default)
+    {
+        return await PublishedArticlesQuery()
+            .OrderByDescending(x => x.PublishedTime ?? x.CreationTime)
+            .Select(x => MapToListDto(x))
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<ArticleDetailDto?> GetPublishedBySlugAsync(string slug, CancellationToken cancellationToken = default)
+    {
+        var article = await _dbContext.Articles
+            .AsNoTracking()
+            .Include(x => x.Category)
+            .Include(x => x.Author)
+            .Include(x => x.ArticleTags)
+                .ThenInclude(x => x.Tag)
+            .FirstOrDefaultAsync(x => x.Slug == slug && x.Status == ArticleStatus.Published, cancellationToken);
+
+        if (article == null)
+        {
+            return null;
+        }
+
+        return new ArticleDetailDto
+        {
+            Id = article.Id,
+            Title = article.Title,
+            Slug = article.Slug,
+            Summary = article.Summary,
+            Content = article.Content,
+            CoverImage = article.CoverImage,
+            CategoryId = article.CategoryId,
+            CategoryName = article.Category.Name,
+            AuthorId = article.AuthorId,
+            AuthorName = article.Author != null ? (article.Author.DisplayName ?? article.Author.UserName) : null,
+            Status = article.Status.ToString(),
+            ViewCount = article.ViewCount,
+            PublishedTime = article.PublishedTime,
+            TagIds = article.ArticleTags.Select(x => x.TagId).ToList(),
+            Tags = article.ArticleTags.Select(x => x.Tag!.Name).ToList()
+        };
+    }
+
+    public async Task IncrementViewCountAsync(long id, CancellationToken cancellationToken = default)
+    {
+        var article = await _dbContext.Articles.FindAsync([id], cancellationToken);
+        if (article == null)
+        {
+            return;
+        }
+
+        article.ViewCount++;
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
     public async Task CreateAsync(CreateArticleDto input, CancellationToken cancellationToken = default)
@@ -196,6 +275,29 @@ public class ArticleAppService : IArticleAppService, IScopedDependency
 
         await _articleRepository.DeleteAsync(id, cancellationToken: cancellationToken);
     }
+
+    private IQueryable<Article> PublishedArticlesQuery() =>
+        _dbContext.Articles
+            .AsNoTracking()
+            .Where(x => x.Status == ArticleStatus.Published)
+            .Include(x => x.Category)
+            .Include(x => x.Author)
+            .Include(x => x.ArticleTags)
+                .ThenInclude(x => x.Tag);
+
+    private static ArticleListDto MapToListDto(Article x) => new()
+    {
+        Id = x.Id,
+        Title = x.Title,
+        Slug = x.Slug,
+        CategoryName = x.Category.Name,
+        AuthorName = x.Author != null ? (x.Author.DisplayName ?? x.Author.UserName) : null,
+        Status = x.Status.ToString(),
+        ViewCount = x.ViewCount,
+        PublishedTime = x.PublishedTime,
+        CreationTime = x.CreationTime,
+        Tags = x.ArticleTags.Select(t => t.Tag!.Name).ToList()
+    };
 
     private async Task<string> EnsureUniqueArticleSlugAsync(
         string source,

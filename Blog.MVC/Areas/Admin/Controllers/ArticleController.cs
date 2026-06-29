@@ -1,7 +1,6 @@
 using Blog.MVC.IServices.Blog;
 using Blog.MVC.IServices.Blog.Dtos;
 using Blog.MVC.Models.Common;
-using Blog.MVC.Models.Users;
 using Blog.MVC.ViewModels.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace Blog.MVC.Areas.Admin.Controllers;
 
 [Area("Admin")]
-[Authorize(Roles = $"{nameof(UserRole.Admin)},{nameof(UserRole.Author)}")]
+[Authorize]
 public class ArticleController : Controller
 {
     private readonly IArticleAppService _articleAppService;

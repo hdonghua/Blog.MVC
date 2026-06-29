@@ -13,15 +13,4 @@ public class AppUser : FullAuditedEntity
     public string? DisplayName { get; set; }
 
     public string? Avatar { get; set; }
-
-    public UserRole Role { get; set; } = UserRole.Author;
-
-    public bool IsActive { get; set; } = true;
-}
-
-public enum UserRole
-{
-    Admin = 1,
-    Author = 2,
-    Reader = 3
 }

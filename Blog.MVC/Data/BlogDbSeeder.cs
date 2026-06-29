@@ -51,32 +51,18 @@ public class BlogDbSeeder : IScopedDependency
 
     private async Task SeedUsersAsync(CancellationToken cancellationToken)
     {
-        if ((await _userRepository.GetListAsync(cancellationToken: cancellationToken)).Count > 0)
+        if (await _userRepository.AnyAsync(x => true, cancellationToken: cancellationToken))
         {
             return;
         }
 
         await _userRepository.InsertAsync(new AppUser
         {
-
             UserName = "admin",
             Email = "admin@blog.local",
-            DisplayName = "管理员",
-            Role = UserRole.Admin,
-            IsActive = true,
+            DisplayName = "博主",
             PasswordHash = _passwordHasher.HashPassword("Admin@123")
         }, cancellationToken: cancellationToken);
-
-        await _userRepository.InsertAsync(new AppUser
-        {
-            UserName = "author",
-            Email = "author@blog.local",
-            DisplayName = "博主",
-            Role = UserRole.Author,
-            IsActive = true,
-            PasswordHash = _passwordHasher.HashPassword("Author@123")
-        }, cancellationToken: cancellationToken);
-
     }
 
     private async Task SeedCategoriesAsync(CancellationToken cancellationToken)
@@ -132,7 +118,7 @@ public class BlogDbSeeder : IScopedDependency
 
 
 
-        var author = await _userRepository.FindAsync(x => x.UserName == "author", cancellationToken: cancellationToken);
+        var author = await _userRepository.FindAsync(x => x.UserName == "admin", cancellationToken: cancellationToken);
         var category = await _categoryRepository.FindAsync(x => x.Slug == "tech", cancellationToken: cancellationToken);
         var tags = await _tagRepository.GetListAsync(cancellationToken: cancellationToken);
 

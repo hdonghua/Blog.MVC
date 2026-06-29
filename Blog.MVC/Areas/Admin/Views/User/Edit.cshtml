@@ -1,28 +1,23 @@
-@model UserFormViewModel
-@{
-    ViewData["Title"] = "编辑用户";
-}
-
-<div class="row">
-    <div class="col-lg-6">
-        <div class="card">
-            <div class="card-body">
-                <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" asp-for="Id" />
-                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-                    <partial name="_UserFormFields" model="Model" />
-                    <p class="text-muted small">留空密码表示不修改密码。</p>
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary">保存</button>
-                        <a class="btn btn-outline-secondary" asp-action="Index">取消</a>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+@model UserFormViewModel
+@{
+    ViewData["Title"] = "账号设置";
+}
+
+<div class="card">
+    <div class="card-body">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Id" />
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <partial name="_UserFormFields" model="Model" />
+            <p class="form-text">留空密码表示不修改。</p>
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-primary">保存</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

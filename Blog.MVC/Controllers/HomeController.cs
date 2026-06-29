@@ -1,20 +1,27 @@
-using System.Diagnostics;
+using Blog.MVC.IServices.Blog;
+using Blog.MVC.ViewModels.Site;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using Blog.MVC.Models;
 
 namespace Blog.MVC.Controllers;
 
 public class HomeController : Controller
 {
-    public IActionResult Index()
+    private readonly IArticleAppService _articleAppService;
+
+    public HomeController(IArticleAppService articleAppService)
     {
-        return View();
+        _articleAppService = articleAppService;
     }
 
-    public IActionResult Privacy()
+    public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
-        return View();
+        var result = await _articleAppService.GetPublishedPagedListAsync(1, 6, cancellationToken);
+        return View(new HomeIndexViewModel { RecentArticles = result.Items });
     }
+
+    public IActionResult About() => View();
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()

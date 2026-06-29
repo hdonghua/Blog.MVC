@@ -1,8 +1,43 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model HomeIndexViewModel
+@{
+    ViewData["Title"] = "首页";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="hero-section">
+    <div class="container site-container">
+        <div class="hero-card">
+            <span class="hero-badge">Personal Blog</span>
+            <h1 class="hero-title">记录代码、生活与灵感</h1>
+            <p class="hero-desc">记录技术实践、项目思考与生活片段的个人博客。</p>
+            <div class="hero-actions">
+                <a class="btn btn-site-primary" asp-controller="Blog" asp-action="Timeline">浏览时间线</a>
+                <a class="btn btn-site-outline" asp-controller="Home" asp-action="About">了解更多</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-block">
+    <div class="container site-container">
+        <div class="section-head">
+            <h2>最新文章</h2>
+            <a class="section-more" asp-controller="Blog" asp-action="Timeline">查看全部 →</a>
+        </div>
+
+        @if (Model.RecentArticles.Count == 0)
+        {
+            <div class="empty-state">
+                <p>暂无已发布文章，请先在后台发布内容。</p>
+            </div>
+        }
+        else
+        {
+            <div class="article-grid">
+                @foreach (var article in Model.RecentArticles)
+                {
+                    <partial name="_ArticleCard" model="article" />
+                }
+            </div>
+        }
+    </div>
+</section>

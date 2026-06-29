@@ -1,0 +1,43 @@
+@model BlogDetailViewModel
+@{
+    ViewData["Title"] = Model.Article.Title;
+    var publishedAt = Model.Article.PublishedTime ?? DateTime.UtcNow;
+}
+
+<article class="article-detail">
+    <div class="container site-container site-container-narrow">
+        <header class="article-detail-header">
+            <div class="article-detail-meta">
+                <span class="article-category">@Model.Article.CategoryName</span>
+                <time datetime="@publishedAt.ToString("yyyy-MM-dd")">@publishedAt.ToLocalTime().ToString("yyyy年M月d日")</time>
+                <span>@Model.Article.ViewCount 次阅读</span>
+            </div>
+            <h1>@Model.Article.Title</h1>
+            @if (!string.IsNullOrWhiteSpace(Model.Article.Summary))
+            {
+                <p class="article-detail-summary">@Model.Article.Summary</p>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.Article.AuthorName))
+            {
+                <div class="article-detail-author">作者：@Model.Article.AuthorName</div>
+            }
+            @if (Model.Article.Tags.Count > 0)
+            {
+                <div class="article-card-tags mt-3">
+                    @foreach (var tag in Model.Article.Tags)
+                    {
+                        <span class="article-tag">#@tag</span>
+                    }
+                </div>
+            }
+        </header>
+
+        <div class="article-content markdown-body">
+            @Html.Raw(Model.HtmlContent)
+        </div>
+
+        <footer class="article-detail-footer">
+            <a class="btn btn-site-outline" asp-controller="Blog" asp-action="Timeline">← 返回时间线</a>
+        </footer>
+    </div>
+</article>

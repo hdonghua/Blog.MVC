@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Blog.MVC.Areas.Admin.Controllers;
 
 [Area("Admin")]
-[Authorize(Roles = $"{nameof(UserRole.Admin)},{nameof(UserRole.Author)}")]
+[Authorize]
 public class TagController : Controller
 {
     private readonly ITagAppService _tagAppService;

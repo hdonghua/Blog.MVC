@@ -13,6 +13,14 @@ public interface IArticleAppService
 
     Task<ArticleDetailDto?> GetAsync(long id, CancellationToken cancellationToken = default);
 
+    Task<PagedResult<ArticleListDto>> GetPublishedPagedListAsync(int page = 1, int pageSize = PaginationHelper.DefaultPageSize, CancellationToken cancellationToken = default);
+
+    Task<List<ArticleListDto>> GetPublishedListAsync(CancellationToken cancellationToken = default);
+
+    Task<ArticleDetailDto?> GetPublishedBySlugAsync(string slug, CancellationToken cancellationToken = default);
+
+    Task IncrementViewCountAsync(long id, CancellationToken cancellationToken = default);
+
     Task CreateAsync(CreateArticleDto input, CancellationToken cancellationToken = default);
 
     Task UpdateAsync(UpdateArticleDto input, CancellationToken cancellationToken = default);

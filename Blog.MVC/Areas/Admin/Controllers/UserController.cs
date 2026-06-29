@@ -1,7 +1,6 @@
+using System.Security.Claims;
 using Blog.MVC.IServices.Users;
 using Blog.MVC.IServices.Users.Dtos;
-using Blog.MVC.Models.Common;
-using Blog.MVC.Models.Users;
 using Blog.MVC.ViewModels.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Blog.MVC.Areas.Admin.Controllers;
 
 [Area("Admin")]
-[Authorize(Roles = nameof(UserRole.Admin))]
+[Authorize]
 public class UserController : Controller
 {
     private readonly IUserAppService _userAppService;
@@ -19,55 +18,21 @@ public class UserController : Controller
         _userAppService = userAppService;
     }
 
-    public async Task<IActionResult> Index(int page = 1, int pageSize = PaginationHelper.DefaultPageSize)
+    public IActionResult Index()
     {
-        var result = await _userAppService.GetPagedListAsync(page, pageSize);
-        ViewBag.Pagination = PaginationViewModel.From(result, "User");
-        return View(result);
-    }
-
-    [HttpGet]
-    public IActionResult Create() => View(new UserFormViewModel());
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(UserFormViewModel model)
-    {
-        if (string.IsNullOrWhiteSpace(model.Password))
-        {
-            ModelState.AddModelError(nameof(model.Password), "创建用户时必须设置密码");
-        }
-
-        if (!ModelState.IsValid)
-        {
-            return View(model);
-        }
-
-        try
-        {
-            await _userAppService.CreateAsync(new CreateUserDto
-            {
-                UserName = model.UserName,
-                Email = model.Email,
-                Password = model.Password!,
-                DisplayName = model.DisplayName,
-                Role = model.Role,
-                IsActive = model.IsActive
-            });
-        }
-        catch (InvalidOperationException ex)
-        {
-            ModelState.AddModelError(string.Empty, ex.Message);
-            return View(model);
-        }
-
-        TempData["Success"] = "用户创建成功";
-        return RedirectToAction(nameof(Index));
+        var userId = long.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        return RedirectToAction(nameof(Edit), new { id = userId });
     }
 
     [HttpGet]
     public async Task<IActionResult> Edit(long id)
     {
+        var currentUserId = long.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        if (id != currentUserId)
+        {
+            return Forbid();
+        }
+
         var user = await _userAppService.GetAsync(id);
         if (user == null)
         {
@@ -79,9 +44,7 @@ public class UserController : Controller
             Id = user.Id,
             UserName = user.UserName,
             Email = user.Email,
-            DisplayName = user.DisplayName,
-            Role = user.Role,
-            IsActive = user.IsActive
+            DisplayName = user.DisplayName
         });
     }
 
@@ -89,9 +52,10 @@ public class UserController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(long id, UserFormViewModel model)
     {
-        if (id != model.Id)
+        var currentUserId = long.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        if (id != model.Id || id != currentUserId)
         {
-            return BadRequest();
+            return Forbid();
         }
 
         if (!ModelState.IsValid)
@@ -107,9 +71,7 @@ public class UserController : Controller
                 UserName = model.UserName,
                 Email = model.Email,
                 Password = model.Password,
-                DisplayName = model.DisplayName,
-                Role = model.Role,
-                IsActive = model.IsActive
+                DisplayName = model.DisplayName
             });
         }
         catch (InvalidOperationException ex)
@@ -118,35 +80,7 @@ public class UserController : Controller
             return View(model);
         }
 
-        TempData["Success"] = "用户更新成功";
-        return RedirectToAction(nameof(Index));
-    }
-
-    [HttpGet]
-    public async Task<IActionResult> Delete(long id)
-    {
-        var user = await _userAppService.GetAsync(id);
-        if (user == null)
-        {
-            return NotFound();
-        }
-
-        return View(user);
-    }
-
-    [HttpPost, ActionName("Delete")]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(long id)
-    {
-        var currentUserId = long.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
-        if (id == currentUserId)
-        {
-            TempData["Error"] = "不能删除当前登录用户";
-            return RedirectToAction(nameof(Index));
-        }
-
-        await _userAppService.DeleteAsync(id);
-        TempData["Success"] = "用户已删除";
-        return RedirectToAction(nameof(Index));
+        TempData["Success"] = "账号信息已更新";
+        return RedirectToAction(nameof(Edit), new { id });
     }
 }
