@@ -1,9 +1,23 @@
 <link rel="stylesheet" href="~/lib/editor.md/css/editormd.min.css" asp-append-version="true" />
+<link id="admin-editormd-css-ref" rel="preload" as="style" href="~/css/admin-editormd.css" asp-append-version="true" />
 <script src="~/lib/editor.md/editormd.min.js" asp-append-version="true"></script>
 <script src="~/lib/editor.md/languages/zh-tw.min.js" asp-append-version="true"></script>
 <script>
     $(function () {
         const uploadUrl = '/api/File/upload/editor-image?folder=articles';
+        const editorMdOverrideCss = document.getElementById('admin-editormd-css-ref').href;
+
+        function loadEditorMdOverrides() {
+            if (document.getElementById('admin-editormd-overrides')) {
+                return;
+            }
+
+            const link = document.createElement('link');
+            link.id = 'admin-editormd-overrides';
+            link.rel = 'stylesheet';
+            link.href = editorMdOverrideCss;
+            document.head.appendChild(link);
+        }
 
         // 注意：不要写 lang: 'zh-tw'。字符串会覆盖 defaults.lang 对象，导致 toolbar 报错。
         // zh-tw.min.js 已在上方把语言包写入 editormd.defaults.lang。
@@ -12,6 +26,9 @@
             height: 520,
             path: '@Url.Content("~/lib/editor.md/lib/")',
             pluginPath: '@Url.Content("~/lib/editor.md/plugins/")',
+            theme: 'dark',
+            previewTheme: 'dark',
+            editorTheme: 'pastel-on-dark',
             placeholder: '使用 Markdown 撰写文章内容...',
             codeFold: true,
             searchReplace: true,
@@ -23,7 +40,11 @@
             sequenceDiagram: false,
             imageUpload: true,
             imageFormats: ['jpg', 'jpeg', 'gif', 'png', 'bmp', 'webp'],
-            imageUploadURL: uploadUrl
+            imageUploadURL: uploadUrl,
+            onload: function () {
+                // CodeMirror 主题在 onload 时才注入，覆盖样式须在其后加载
+                loadEditorMdOverrides();
+            }
         });
 
         $('form').on('submit', function () {

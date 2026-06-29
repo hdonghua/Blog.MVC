@@ -29,17 +29,12 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var users = await _userAppService.GetListAsync();
-        var articles = await _articleAppService.GetListAsync();
-        var categories = await _categoryAppService.GetListAsync();
-        var tags = await _tagAppService.GetListAsync();
-
         var model = new DashboardViewModel
         {
-            UserCount = users.Count,
-            ArticleCount = articles.Count,
-            CategoryCount = categories.Count,
-            TagCount = tags.Count,
+            UserCount = await _userAppService.GetCountAsync(),
+            ArticleCount = await _articleAppService.GetCountAsync(),
+            CategoryCount = await _categoryAppService.GetCountAsync(),
+            TagCount = await _tagAppService.GetCountAsync(),
             CurrentUserName = User.Identity?.Name ?? "管理员"
         };
 

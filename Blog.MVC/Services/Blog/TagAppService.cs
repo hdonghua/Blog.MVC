@@ -5,6 +5,7 @@ using Blog.MVC.Helpers;
 using Blog.MVC.IServices.Blog;
 using Blog.MVC.IServices.Blog.Dtos;
 using Blog.MVC.Models.Blog;
+using Blog.MVC.Models.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace Blog.MVC.Services.Blog;
@@ -19,6 +20,42 @@ public class TagAppService : ITagAppService, IScopedDependency
         _tagRepository = tagRepository;
         _dbContext = dbContext;
     }
+
+    public async Task<PagedResult<TagDto>> GetPagedListAsync(int page = 1, int pageSize = PaginationHelper.DefaultPageSize, CancellationToken cancellationToken = default)
+    {
+        (page, pageSize) = PaginationHelper.Normalize(page, pageSize);
+
+        var query = _dbContext.Tags.AsNoTracking().OrderBy(x => x.Name);
+        var totalCount = await query.CountAsync(cancellationToken);
+        var tags = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        var tagIds = tags.Select(x => x.Id).ToList();
+        var articleCounts = await _dbContext.ArticleTags
+            .Where(x => tagIds.Contains(x.TagId))
+            .GroupBy(x => x.TagId)
+            .Select(x => new { TagId = x.Key, Count = x.Count() })
+            .ToDictionaryAsync(x => x.TagId, x => x.Count, cancellationToken);
+
+        return new PagedResult<TagDto>
+        {
+            Items = tags.Select(x => new TagDto
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Slug = x.Slug,
+                ArticleCount = articleCounts.GetValueOrDefault(x.Id)
+            }).ToList(),
+            TotalCount = totalCount,
+            Page = page,
+            PageSize = pageSize
+        };
+    }
+
+    public Task<int> GetCountAsync(CancellationToken cancellationToken = default) =>
+        _dbContext.Tags.CountAsync(cancellationToken);
 
     public async Task<List<TagDto>> GetListAsync(CancellationToken cancellationToken = default)
     {

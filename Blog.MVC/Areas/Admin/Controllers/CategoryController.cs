@@ -1,5 +1,6 @@
 using Blog.MVC.IServices.Blog;
 using Blog.MVC.IServices.Blog.Dtos;
+using Blog.MVC.Models.Common;
 using Blog.MVC.Models.Users;
 using Blog.MVC.ViewModels.Admin;
 using Microsoft.AspNetCore.Authorization;
@@ -18,10 +19,11 @@ public class CategoryController : Controller
         _categoryAppService = categoryAppService;
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int page = 1, int pageSize = PaginationHelper.DefaultPageSize)
     {
-        var categories = await _categoryAppService.GetListAsync();
-        return View(categories);
+        var result = await _categoryAppService.GetPagedListAsync(page, pageSize);
+        ViewBag.Pagination = PaginationViewModel.From(result, "Category");
+        return View(result);
     }
 
     [HttpGet]

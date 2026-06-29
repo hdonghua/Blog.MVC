@@ -5,6 +5,7 @@ using Blog.MVC.Helpers;
 using Blog.MVC.IServices.Blog;
 using Blog.MVC.IServices.Blog.Dtos;
 using Blog.MVC.Models.Blog;
+using Blog.MVC.Models.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace Blog.MVC.Services.Blog;
@@ -19,6 +20,47 @@ public class ArticleAppService : IArticleAppService, IScopedDependency
         _articleRepository = articleRepository;
         _dbContext = dbContext;
     }
+
+    public async Task<PagedResult<ArticleListDto>> GetPagedListAsync(int page = 1, int pageSize = PaginationHelper.DefaultPageSize, CancellationToken cancellationToken = default)
+    {
+        (page, pageSize) = PaginationHelper.Normalize(page, pageSize);
+
+        var query = _dbContext.Articles.AsNoTracking();
+        var totalCount = await query.CountAsync(cancellationToken);
+        var items = await query
+            .Include(x => x.Category)
+            .Include(x => x.Author)
+            .Include(x => x.ArticleTags)
+                .ThenInclude(x => x.Tag)
+            .OrderByDescending(x => x.CreationTime)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(x => new ArticleListDto
+            {
+                Id = x.Id,
+                Title = x.Title,
+                Slug = x.Slug,
+                CategoryName = x.Category.Name,
+                AuthorName = x.Author != null ? (x.Author.DisplayName ?? x.Author.UserName) : null,
+                Status = x.Status.ToString(),
+                ViewCount = x.ViewCount,
+                PublishedTime = x.PublishedTime,
+                CreationTime = x.CreationTime,
+                Tags = x.ArticleTags.Select(t => t.Tag.Name).ToList()
+            })
+            .ToListAsync(cancellationToken);
+
+        return new PagedResult<ArticleListDto>
+        {
+            Items = items,
+            TotalCount = totalCount,
+            Page = page,
+            PageSize = pageSize
+        };
+    }
+
+    public Task<int> GetCountAsync(CancellationToken cancellationToken = default) =>
+        _dbContext.Articles.CountAsync(cancellationToken);
 
     public async Task<List<ArticleListDto>> GetListAsync(CancellationToken cancellationToken = default)
     {

@@ -1,6 +1,10 @@
 @{
     var isLoginPage = ViewContext.RouteData.Values["controller"]?.ToString() == "Account"
         && ViewContext.RouteData.Values["action"]?.ToString() == "Login";
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+
+    string NavClass(string controller) =>
+        currentController == controller ? "nav-link active" : "nav-link";
 }
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -19,34 +23,40 @@
 else
 {
     <div class="admin-wrapper d-flex">
-        <aside class="admin-sidebar bg-dark text-white p-3">
+        <aside class="admin-sidebar text-white p-3">
             <div class="admin-brand mb-4">
-                <a class="text-white text-decoration-none fw-bold" asp-area="Admin" asp-controller="Home" asp-action="Index">博客后台</a>
+                <a class="text-decoration-none" asp-area="Admin" asp-controller="Home" asp-action="Index">NEXUS // BLOG</a>
+                <small>Dark Console System</small>
+                <div class="admin-status">Online</div>
             </div>
-            <nav class="nav flex-column gap-1">
-                <a class="nav-link text-white-50" asp-area="Admin" asp-controller="Home" asp-action="Index">仪表盘</a>
-                <a class="nav-link text-white-50" asp-area="Admin" asp-controller="Article" asp-action="Index">文章管理</a>
-                <a class="nav-link text-white-50" asp-area="Admin" asp-controller="Category" asp-action="Index">分类管理</a>
-                <a class="nav-link text-white-50" asp-area="Admin" asp-controller="Tag" asp-action="Index">标签管理</a>
+            <nav class="nav flex-column">
+                <div class="nav-section">概览</div>
+                <a class="@NavClass("Home")" asp-area="Admin" asp-controller="Home" asp-action="Index">仪表盘</a>
+                <div class="nav-section">内容</div>
+                <a class="@NavClass("Article")" asp-area="Admin" asp-controller="Article" asp-action="Index">文章管理</a>
+                <a class="@NavClass("Category")" asp-area="Admin" asp-controller="Category" asp-action="Index">分类管理</a>
+                <a class="@NavClass("Tag")" asp-area="Admin" asp-controller="Tag" asp-action="Index">标签管理</a>
                 @if (User.IsInRole(nameof(UserRole.Admin)))
                 {
-                    <a class="nav-link text-white-50" asp-area="Admin" asp-controller="User" asp-action="Index">用户管理</a>
+                    <div class="nav-section">系统</div>
+                    <a class="@NavClass("User")" asp-area="Admin" asp-controller="User" asp-action="Index">用户管理</a>
                 }
-                <a class="nav-link text-white-50" asp-area="" asp-controller="Home" asp-action="Index" target="_blank">访问前台</a>
+                <div class="nav-section">外链</div>
+                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index" target="_blank">访问前台</a>
             </nav>
         </aside>
-        <div class="admin-content flex-grow-1">
-            <header class="admin-header bg-white border-bottom px-4 py-3 d-flex justify-content-between align-items-center">
+        <div class="admin-content flex-grow-1 d-flex flex-column">
+            <header class="admin-header px-4 py-3 d-flex justify-content-between align-items-center">
                 <h1 class="h5 mb-0">@ViewData["Title"]</h1>
                 <div class="d-flex align-items-center gap-3">
-                    <span class="text-muted small">@User.Identity?.Name</span>
+                    <span class="admin-user">@User.Identity?.Name</span>
                     <form asp-area="Admin" asp-controller="Account" asp-action="Logout" method="post">
                         @Html.AntiForgeryToken()
                         <button type="submit" class="btn btn-outline-secondary btn-sm">退出</button>
                     </form>
                 </div>
             </header>
-            <main class="p-4">
+            <main class="admin-main flex-grow-1">
                 @if (TempData["Success"] != null)
                 {
                     <div class="alert alert-success alert-dismissible fade show" role="alert">

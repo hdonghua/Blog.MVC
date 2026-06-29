@@ -14,13 +14,9 @@ public class BlogDbContext : BeaverXDbContext<BlogDbContext>
     }
 
     public DbSet<AppUser> Users { get; set; }
-
     public DbSet<Category> Categories { get; set; }
-
     public DbSet<Tag> Tags { get; set; }
-
     public DbSet<Article> Articles { get; set; }
-
     public DbSet<ArticleTag> ArticleTags { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

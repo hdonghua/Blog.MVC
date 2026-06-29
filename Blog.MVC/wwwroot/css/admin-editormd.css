@@ -1,0 +1,311 @@
+/* Editor.md 暗色科技风 — 须在 CodeMirror 主题加载后引入 */
+
+.admin-body .editormd.editormd-theme-dark {
+    border: 1px solid rgba(56, 189, 248, 0.28) !important;
+    border-radius: 0 !important;
+    background: #0f1624;
+    box-shadow: 0 0 28px rgba(34, 211, 238, 0.08);
+}
+
+.admin-body .editormd-theme-dark .editormd-toolbar {
+    background: linear-gradient(180deg, #141d2e 0%, #0f1624 100%) !important;
+    border-color: rgba(56, 189, 248, 0.15) !important;
+    border-radius: 0 !important;
+}
+
+.admin-body .editormd-theme-dark .editormd-menu > li > a {
+    color: #7b8ba3 !important;
+    border-color: transparent !important;
+    border-radius: 0 !important;
+    transition: color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+
+.admin-body .editormd-theme-dark .editormd-menu > li > a:hover,
+.admin-body .editormd-theme-dark .editormd-menu > li > a.active {
+    color: #22d3ee !important;
+    background: rgba(34, 211, 238, 0.12) !important;
+    border-color: rgba(56, 189, 248, 0.15) !important;
+    box-shadow: 0 0 10px rgba(34, 211, 238, 0.12);
+}
+
+.admin-body .editormd-theme-dark .editormd-menu > li.divider {
+    border-right-color: rgba(56, 189, 248, 0.15) !important;
+}
+
+.admin-body .editormd-theme-dark .CodeMirror {
+    border-right: 1px solid rgba(56, 189, 248, 0.15) !important;
+}
+
+/* CodeMirror · pastel-on-dark 科技风调色 */
+.admin-body .editormd .cm-s-pastel-on-dark.CodeMirror {
+    background: #0a101c !important;
+    color: #cbd5e1 !important;
+    font-family: Consolas, "Cascadia Mono", "Segoe UI Mono", monospace;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.admin-body .editormd .cm-s-pastel-on-dark .CodeMirror-gutters {
+    background: #070b14 !important;
+    border-right: 1px solid rgba(56, 189, 248, 0.15) !important;
+}
+
+.admin-body .editormd .cm-s-pastel-on-dark .CodeMirror-linenumber {
+    color: #475569 !important;
+}
+
+.admin-body .editormd .cm-s-pastel-on-dark .CodeMirror-cursor {
+    border-left: 2px solid #22d3ee !important;
+}
+
+.admin-body .editormd .cm-s-pastel-on-dark div.CodeMirror-selected,
+.admin-body .editormd .cm-s-pastel-on-dark.CodeMirror ::selection,
+.admin-body .editormd .cm-s-pastel-on-dark.CodeMirror ::-moz-selection {
+    background: rgba(34, 211, 238, 0.18) !important;
+}
+
+.admin-body .editormd .cm-s-pastel-on-dark .CodeMirror-activeline-background {
+    background: rgba(34, 211, 238, 0.05) !important;
+}
+
+.admin-body .editormd .cm-s-pastel-on-dark .CodeMirror-matchingbracket {
+    border-color: rgba(34, 211, 238, 0.45) !important;
+    color: #22d3ee !important;
+}
+
+.admin-body .editormd .cm-s-pastel-on-dark span.cm-header,
+.admin-body .editormd .cm-s-pastel-on-dark span.cm-header-1,
+.admin-body .editormd .cm-s-pastel-on-dark span.cm-header-2,
+.admin-body .editormd .cm-s-pastel-on-dark span.cm-header-3 {
+    color: #22d3ee !important;
+}
+
+.admin-body .editormd .cm-s-pastel-on-dark span.cm-link {
+    color: #818cf8 !important;
+}
+
+.admin-body .editormd .cm-s-pastel-on-dark span.cm-url {
+    color: #67e8f9 !important;
+}
+
+.admin-body .editormd .cm-s-pastel-on-dark span.cm-strong {
+    color: #f1f5f9 !important;
+}
+
+.admin-body .editormd .cm-s-pastel-on-dark span.cm-em {
+    color: #a78bfa !important;
+}
+
+.admin-body .editormd .cm-s-pastel-on-dark span.cm-quote {
+    color: #64748b !important;
+}
+
+.admin-body .editormd .cm-s-pastel-on-dark span.cm-comment {
+    color: #64748b !important;
+}
+
+.admin-body .editormd .cm-s-pastel-on-dark span.cm-keyword {
+    color: #818cf8 !important;
+}
+
+.admin-body .editormd .cm-s-pastel-on-dark span.cm-string {
+    color: #34d399 !important;
+}
+
+.admin-body .editormd .cm-s-pastel-on-dark span.cm-tag {
+    color: #f472b6 !important;
+}
+
+.admin-body .editormd .cm-s-pastel-on-dark span.cm-attribute {
+    color: #fbbf24 !important;
+}
+
+.admin-body .editormd .cm-s-pastel-on-dark span.cm-hr {
+    color: rgba(34, 211, 238, 0.5) !important;
+}
+
+/* 预览区 */
+.admin-body .editormd-preview-theme-dark {
+    color: #94a3b8;
+    background: #0a101c !important;
+}
+
+.admin-body .editormd-preview-theme-dark .editormd-preview-container {
+    color: #94a3b8 !important;
+    background-color: #0a101c !important;
+}
+
+.admin-body .editormd-preview-theme-dark .markdown-body {
+    color: #cbd5e1;
+    font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+.admin-body .editormd-preview-theme-dark .markdown-body h1,
+.admin-body .editormd-preview-theme-dark .markdown-body h2,
+.admin-body .editormd-preview-theme-dark .markdown-body h3,
+.admin-body .editormd-preview-theme-dark .markdown-body h4 {
+    color: #22d3ee;
+    border-bottom-color: rgba(56, 189, 248, 0.15);
+}
+
+.admin-body .editormd-preview-theme-dark .markdown-body a {
+    color: #818cf8;
+}
+
+.admin-body .editormd-preview-theme-dark .markdown-body a:hover {
+    color: #a5b4fc;
+}
+
+.admin-body .editormd-preview-theme-dark .markdown-body blockquote {
+    color: #94a3b8 !important;
+    background: #0f1624 !important;
+    border-left: 3px solid #22d3ee !important;
+    border-color: #22d3ee !important;
+}
+
+.admin-body .editormd-preview-theme-dark .markdown-body code,
+.admin-body .editormd-preview-theme-dark .editormd-preview-container code {
+    color: #67e8f9 !important;
+    background: rgba(34, 211, 238, 0.1) !important;
+    border: 1px solid rgba(56, 189, 248, 0.15) !important;
+    border-radius: 0 !important;
+    padding: 2px 6px;
+}
+
+.admin-body .editormd-preview-theme-dark .markdown-body pre,
+.admin-body .editormd-preview-theme-dark .editormd-preview-container pre {
+    background: #070b14 !important;
+    border: 1px solid rgba(56, 189, 248, 0.15) !important;
+    border-radius: 0 !important;
+}
+
+.admin-body .editormd-preview-theme-dark .markdown-body pre code {
+    background: transparent !important;
+    border: none !important;
+    color: #cbd5e1 !important;
+}
+
+.admin-body .editormd-preview-theme-dark .markdown-body table th,
+.admin-body .editormd-preview-theme-dark .markdown-body table td {
+    border-color: rgba(56, 189, 248, 0.15) !important;
+}
+
+.admin-body .editormd-preview-theme-dark .markdown-body table tr {
+    background: transparent !important;
+}
+
+.admin-body .editormd-preview-theme-dark .markdown-body table tr:nth-child(2n) {
+    background: rgba(34, 211, 238, 0.04) !important;
+}
+
+.admin-body .editormd-preview-theme-dark .markdown-body hr {
+    background: rgba(56, 189, 248, 0.2) !important;
+    border: none;
+    height: 1px;
+}
+
+.admin-body .editormd-preview-theme-dark .editormd-toc-menu > .markdown-toc {
+    background: #0f1624 !important;
+    border: 1px solid rgba(56, 189, 248, 0.15) !important;
+    border-radius: 0 !important;
+}
+
+/* 弹窗（挂 body 下，不限于 .admin-body） */
+.editormd-dialog {
+    background: #141d2e !important;
+    color: #e2e8f0 !important;
+    border: 1px solid rgba(56, 189, 248, 0.28) !important;
+    border-radius: 0 !important;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.65), 0 0 20px rgba(34, 211, 238, 0.1) !important;
+}
+
+.editormd-dialog-header {
+    background: #0f1624 !important;
+    border-bottom: 1px solid rgba(56, 189, 248, 0.15) !important;
+}
+
+.editormd-dialog-header:hover {
+    background: #141d2e !important;
+}
+
+.editormd-dialog-title {
+    color: #e2e8f0 !important;
+}
+
+.editormd-dialog-close {
+    color: #64748b !important;
+}
+
+.editormd-dialog-close:hover {
+    color: #22d3ee !important;
+}
+
+.editormd-dialog-container h1 {
+    color: #e2e8f0 !important;
+}
+
+.editormd-dialog-container h1 .fa {
+    color: #22d3ee !important;
+}
+
+.editormd-dialog-container h1 small,
+.editormd-dialog-container label,
+.editormd-dialog-info .hover-link {
+    color: #7b8ba3 !important;
+}
+
+.editormd-dialog-container input[type="text"],
+.editormd-dialog-container input[type="url"],
+.editormd-dialog-container input[type="number"],
+.editormd-dialog-container textarea,
+.editormd-dialog-container select {
+    background: #0a101c !important;
+    color: #e2e8f0 !important;
+    border: 1px solid rgba(56, 189, 248, 0.15) !important;
+    border-radius: 0 !important;
+}
+
+.editormd-dialog-container input:focus,
+.editormd-dialog-container textarea:focus,
+.editormd-dialog-container select:focus {
+    border-color: #22d3ee !important;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.15);
+}
+
+.editormd-dialog-container .btn,
+.editormd-dialog-footer .btn,
+.editormd-dialog-container button {
+    border-radius: 0 !important;
+}
+
+.editormd-dialog-container .btn-primary,
+.editormd-dialog-footer .btn-primary {
+    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%) !important;
+    border-color: #22d3ee !important;
+    color: #060a12 !important;
+}
+
+.editormd-mask,
+.editormd-container-mask {
+    background: rgba(6, 10, 18, 0.78) !important;
+}
+
+.editormd-preview-close-btn {
+    color: #64748b !important;
+    background: #0f1624 !important;
+    border: 1px solid rgba(56, 189, 248, 0.15) !important;
+    border-radius: 0 !important;
+}
+
+.editormd-preview-close-btn:hover {
+    color: #22d3ee !important;
+    border-color: #22d3ee !important;
+}
+
+/* 搜索替换面板 */
+.editormd-dialog-container .CodeMirror {
+    background: #0a101c !important;
+    color: #cbd5e1 !important;
+    border: 1px solid rgba(56, 189, 248, 0.15) !important;
+}

@@ -1,5 +1,6 @@
 using Blog.MVC.IServices.Users;
 using Blog.MVC.IServices.Users.Dtos;
+using Blog.MVC.Models.Common;
 using Blog.MVC.Models.Users;
 using Blog.MVC.ViewModels.Admin;
 using Microsoft.AspNetCore.Authorization;
@@ -18,10 +19,11 @@ public class UserController : Controller
         _userAppService = userAppService;
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int page = 1, int pageSize = PaginationHelper.DefaultPageSize)
     {
-        var users = await _userAppService.GetListAsync();
-        return View(users);
+        var result = await _userAppService.GetPagedListAsync(page, pageSize);
+        ViewBag.Pagination = PaginationViewModel.From(result, "User");
+        return View(result);
     }
 
     [HttpGet]

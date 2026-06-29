@@ -5,6 +5,7 @@ using Blog.MVC.Helpers;
 using Blog.MVC.IServices.Blog;
 using Blog.MVC.IServices.Blog.Dtos;
 using Blog.MVC.Models.Blog;
+using Blog.MVC.Models.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace Blog.MVC.Services.Blog;
@@ -19,6 +20,46 @@ public class CategoryAppService : ICategoryAppService, IScopedDependency
         _categoryRepository = categoryRepository;
         _dbContext = dbContext;
     }
+
+    public async Task<PagedResult<CategoryDto>> GetPagedListAsync(int page = 1, int pageSize = PaginationHelper.DefaultPageSize, CancellationToken cancellationToken = default)
+    {
+        (page, pageSize) = PaginationHelper.Normalize(page, pageSize);
+
+        var query = _dbContext.Categories.AsNoTracking()
+            .OrderBy(x => x.SortOrder)
+            .ThenBy(x => x.Id);
+        var totalCount = await query.CountAsync(cancellationToken);
+        var categories = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        var categoryIds = categories.Select(x => x.Id).ToList();
+        var articleCounts = await _dbContext.Articles
+            .Where(x => categoryIds.Contains(x.CategoryId))
+            .GroupBy(x => x.CategoryId)
+            .Select(x => new { CategoryId = x.Key, Count = x.Count() })
+            .ToDictionaryAsync(x => x.CategoryId, x => x.Count, cancellationToken);
+
+        return new PagedResult<CategoryDto>
+        {
+            Items = categories.Select(x => new CategoryDto
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Slug = x.Slug,
+                Description = x.Description,
+                SortOrder = x.SortOrder,
+                ArticleCount = articleCounts.GetValueOrDefault(x.Id)
+            }).ToList(),
+            TotalCount = totalCount,
+            Page = page,
+            PageSize = pageSize
+        };
+    }
+
+    public Task<int> GetCountAsync(CancellationToken cancellationToken = default) =>
+        _dbContext.Categories.CountAsync(cancellationToken);
 
     public async Task<List<CategoryDto>> GetListAsync(CancellationToken cancellationToken = default)
     {
