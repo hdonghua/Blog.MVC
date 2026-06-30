@@ -17,25 +17,28 @@
     <header class="site-header">
         <nav class="navbar navbar-expand-md site-navbar">
             <div class="container site-container">
-                <a class="navbar-brand site-brand" asp-controller="Home" asp-action="Index">WarmLog</a>
-                <button class="navbar-toggler site-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#siteNav"
-                        aria-controls="siteNav" aria-expanded="false" aria-label="切换导航">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse justify-content-center" id="siteNav">
-                    <ul class="navbar-nav site-nav">
-                        <li class="nav-item">
-                            <a class="@NavClass("Home")" asp-controller="Home" asp-action="Index">首页</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="@NavClass("Blog", "Timeline")" asp-controller="Blog" asp-action="Timeline">时间线</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="@NavClass("Home", "About")" asp-controller="Home" asp-action="About">关于</a>
-                        </li>
-                    </ul>
+                <div class="site-navbar-center">
+                    <div class="site-navbar-group">
+                        <a class="navbar-brand site-brand" asp-controller="Home" asp-action="Index">WarmLog</a>
+                        <div class="collapse navbar-collapse site-nav-collapse" id="siteNav">
+                            <ul class="navbar-nav site-nav">
+                                <li class="nav-item">
+                                    <a class="@NavClass("Home")" asp-controller="Home" asp-action="Index">首页</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="@NavClass("Blog", "Timeline")" asp-controller="Blog" asp-action="Timeline">时间线</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="@NavClass("Home", "About")" asp-controller="Home" asp-action="About">关于</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <button class="navbar-toggler site-toggler ms-md-0" type="button" data-bs-toggle="collapse" data-bs-target="#siteNav"
+                            aria-controls="siteNav" aria-expanded="false" aria-label="切换导航">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
                 </div>
-                <div class="d-none d-md-block site-nav-spacer"></div>
             </div>
         </nav>
     </header>
