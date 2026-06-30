@@ -87,6 +87,8 @@ public class ArticleListDto
 
     public string CategoryName { get; set; } = null!;
 
+    public string CategorySlug { get; set; } = null!;
+
     public string? AuthorName { get; set; }
 
     public string Status { get; set; } = null!;
@@ -119,6 +121,8 @@ public class ArticleDetailDto
     public long CategoryId { get; set; }
 
     public string CategoryName { get; set; } = null!;
+
+    public string CategorySlug { get; set; } = null!;
 
     public long? AuthorId { get; set; }
 

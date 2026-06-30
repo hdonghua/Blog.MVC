@@ -42,6 +42,7 @@ public class ArticleAppService : IArticleAppService, IScopedDependency
                 Slug = x.Slug,
                 CoverImage = x.CoverImage,
                 CategoryName = x.Category.Name,
+                CategorySlug = x.Category.Slug,
                 AuthorName = x.Author != null ? (x.Author.DisplayName ?? x.Author.UserName) : null,
                 Status = x.Status.ToString(),
                 ViewCount = x.ViewCount,
@@ -79,6 +80,7 @@ public class ArticleAppService : IArticleAppService, IScopedDependency
                 Slug = x.Slug,
                 CoverImage = x.CoverImage,
                 CategoryName = x.Category.Name,
+                CategorySlug = x.Category.Slug,
                 AuthorName = x.Author != null ? (x.Author.DisplayName ?? x.Author.UserName) : null,
                 Status = x.Status.ToString(),
                 ViewCount = x.ViewCount,
@@ -114,6 +116,7 @@ public class ArticleAppService : IArticleAppService, IScopedDependency
             CoverImage = article.CoverImage,
             CategoryId = article.CategoryId,
             CategoryName = article.Category.Name,
+            CategorySlug = article.Category.Slug,
             AuthorId = article.AuthorId,
             AuthorName = article.Author != null ? (article.Author.DisplayName ?? article.Author.UserName) : null,
             Status = article.Status.ToString(),
@@ -146,18 +149,24 @@ public class ArticleAppService : IArticleAppService, IScopedDependency
         };
     }
 
-    public async Task<List<ArticleListDto>> GetPublishedListAsync(CancellationToken cancellationToken = default)
+    public async Task<List<ArticleListDto>> GetPublishedListAsync(
+        string? categorySlug = null,
+        string? tagSlug = null,
+        CancellationToken cancellationToken = default)
     {
-        return await PublishedArticlesQuery()
-            .OrderByDescending(x => x.PublishedTime ?? x.CreationTime)
-            .Select(x => MapToListDto(x))
-            .ToListAsync(cancellationToken);
-    }
+        var query = PublishedArticlesQuery();
 
-    public async Task<List<ArticleListDto>> GetPublishedListByTagSlugAsync(string tagSlug, CancellationToken cancellationToken = default)
-    {
-        return await PublishedArticlesQuery()
-            .Where(x => x.ArticleTags.Any(at => at.Tag!.Slug == tagSlug))
+        if (!string.IsNullOrWhiteSpace(categorySlug))
+        {
+            query = query.Where(x => x.Category.Slug == categorySlug);
+        }
+
+        if (!string.IsNullOrWhiteSpace(tagSlug))
+        {
+            query = query.Where(x => x.ArticleTags.Any(at => at.Tag!.Slug == tagSlug));
+        }
+
+        return await query
             .OrderByDescending(x => x.PublishedTime ?? x.CreationTime)
             .Select(x => MapToListDto(x))
             .ToListAsync(cancellationToken);
@@ -188,6 +197,7 @@ public class ArticleAppService : IArticleAppService, IScopedDependency
             CoverImage = article.CoverImage,
             CategoryId = article.CategoryId,
             CategoryName = article.Category.Name,
+            CategorySlug = article.Category.Slug,
             AuthorId = article.AuthorId,
             AuthorName = article.Author != null ? (article.Author.DisplayName ?? article.Author.UserName) : null,
             Status = article.Status.ToString(),
@@ -305,6 +315,7 @@ public class ArticleAppService : IArticleAppService, IScopedDependency
         CoverImage = x.CoverImage,
         Summary = x.Summary,
         CategoryName = x.Category.Name,
+        CategorySlug = x.Category.Slug,
         AuthorName = x.Author != null ? (x.Author.DisplayName ?? x.Author.UserName) : null,
         Status = x.Status.ToString(),
         ViewCount = x.ViewCount,

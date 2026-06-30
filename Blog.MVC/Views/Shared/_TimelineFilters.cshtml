@@ -1,0 +1,45 @@
+@model TimelineViewModel
+@{
+    var hasCategoryFilter = !string.IsNullOrWhiteSpace(Model.ActiveCategorySlug);
+    var hasTagFilter = !string.IsNullOrWhiteSpace(Model.ActiveTagSlug);
+    var maxTagCount = Model.Tags.Count > 0 ? Model.Tags.Max(t => t.ArticleCount) : 1;
+}
+
+<nav class="timeline-filters" aria-label="文章筛选">
+    @if (Model.Categories.Count > 0)
+    {
+        <div class="timeline-filter-group">
+            <div class="timeline-filter-label">分类</div>
+            <div class="timeline-categories">
+                <a class="timeline-filter-link @(!hasCategoryFilter ? "is-active" : "")"
+                   asp-controller="Blog" asp-action="Timeline"
+                   asp-route-tag="@Model.ActiveTagSlug">全部</a>
+                @foreach (var category in Model.Categories)
+                {
+                    <a class="timeline-filter-link @(Model.ActiveCategorySlug == category.Slug ? "is-active" : "")"
+                       asp-controller="Blog" asp-action="Timeline"
+                       asp-route-category="@category.Slug"
+                       asp-route-tag="@Model.ActiveTagSlug">@category.Name</a>
+                }
+            </div>
+        </div>
+    }
+
+    @if (Model.Tags.Count > 0)
+    {
+        <div class="timeline-filter-group">
+            <div class="timeline-filter-label">标签</div>
+            <div class="timeline-tag-cloud">
+                @foreach (var tag in Model.Tags)
+                {
+                    var sizeClass = tag.ArticleCount >= maxTagCount * 0.66 ? "tag-size-lg"
+                        : tag.ArticleCount >= maxTagCount * 0.33 ? "tag-size-md" : "tag-size-sm";
+                    <a class="article-tag @sizeClass @(Model.ActiveTagSlug == tag.Slug ? "is-active" : "")"
+                       asp-controller="Blog" asp-action="Timeline"
+                       asp-route-tag="@tag.Slug"
+                       asp-route-category="@Model.ActiveCategorySlug">#@tag.Name</a>
+                }
+            </div>
+        </div>
+    }
+</nav>

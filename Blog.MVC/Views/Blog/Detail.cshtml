@@ -15,7 +15,7 @@
 
         <header class="article-detail-header">
             <div class="article-detail-meta">
-                <span class="article-category">@Model.Article.CategoryName</span>
+                <a class="article-category" asp-controller="Blog" asp-action="Timeline" asp-route-category="@Model.Article.CategorySlug">@Model.Article.CategoryName</a>
                 <time datetime="@publishedAt.ToString("yyyy-MM-dd")">@publishedAt.ToLocalTime().ToString("yyyy年M月d日")</time>
                 <span>@Model.Article.ViewCount 次阅读</span>
             </div>

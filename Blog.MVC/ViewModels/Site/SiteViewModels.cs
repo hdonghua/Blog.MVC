@@ -13,6 +13,18 @@ public class HomeIndexViewModel
 public class TimelineViewModel
 {
     public List<TimelineGroupViewModel> Groups { get; set; } = [];
+
+    public List<CategoryDto> Categories { get; set; } = [];
+
+    public List<TagDto> Tags { get; set; } = [];
+
+    public string? ActiveCategorySlug { get; set; }
+
+    public string? ActiveTagSlug { get; set; }
+
+    public string? ActiveCategoryName { get; set; }
+
+    public string? ActiveTagName { get; set; }
 }
 
 public class TimelineGroupViewModel

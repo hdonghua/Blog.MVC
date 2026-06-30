@@ -84,6 +84,35 @@ public class CategoryAppService : ICategoryAppService, IScopedDependency
             .ToList();
     }
 
+    public async Task<List<CategoryDto>> GetPublishedListAsync(CancellationToken cancellationToken = default)
+    {
+        var publishedCounts = await _dbContext.Articles
+            .AsNoTracking()
+            .Where(x => x.Status == ArticleStatus.Published)
+            .GroupBy(x => x.CategoryId)
+            .Select(x => new { CategoryId = x.Key, Count = x.Count() })
+            .ToDictionaryAsync(x => x.CategoryId, x => x.Count, cancellationToken);
+
+        var categories = await _dbContext.Categories
+            .AsNoTracking()
+            .OrderBy(x => x.SortOrder)
+            .ThenBy(x => x.Id)
+            .ToListAsync(cancellationToken);
+
+        return categories
+            .Select(x => new CategoryDto
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Slug = x.Slug,
+                Description = x.Description,
+                SortOrder = x.SortOrder,
+                ArticleCount = publishedCounts.GetValueOrDefault(x.Id)
+            })
+            .Where(x => x.ArticleCount > 0)
+            .ToList();
+    }
+
     public async Task<CategoryDto?> GetAsync(long id, CancellationToken cancellationToken = default)
     {
         var category = await _categoryRepository.FindAsync(id, cancellationToken);
@@ -93,6 +122,27 @@ public class CategoryAppService : ICategoryAppService, IScopedDependency
         }
 
         var articleCount = await _dbContext.Articles.CountAsync(x => x.CategoryId == id, cancellationToken);
+        return new CategoryDto
+        {
+            Id = category.Id,
+            Name = category.Name,
+            Slug = category.Slug,
+            Description = category.Description,
+            SortOrder = category.SortOrder,
+            ArticleCount = articleCount
+        };
+    }
+
+    public async Task<CategoryDto?> GetBySlugAsync(string slug, CancellationToken cancellationToken = default)
+    {
+        var category = await _categoryRepository.FindAsync(x => x.Slug == slug, cancellationToken: cancellationToken);
+        if (category == null)
+        {
+            return null;
+        }
+
+        var articleCount = await _dbContext.Articles
+            .CountAsync(x => x.CategoryId == category.Id && x.Status == ArticleStatus.Published, cancellationToken);
         return new CategoryDto
         {
             Id = category.Id,

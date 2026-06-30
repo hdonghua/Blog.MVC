@@ -1,21 +1,49 @@
 @model TimelineViewModel
 @{
     ViewData["Title"] = "时间线";
+    var hasFilter = !string.IsNullOrWhiteSpace(Model.ActiveCategoryName)
+        || !string.IsNullOrWhiteSpace(Model.ActiveTagName);
 }
 
 <section class="page-hero">
     <div class="container site-container">
         <h1>文章时间线</h1>
-        <p>按发布时间纵览全部博客文章。</p>
+        @if (hasFilter)
+        {
+            <p class="timeline-hero-filter">
+                @if (!string.IsNullOrWhiteSpace(Model.ActiveCategoryName))
+                {
+                    <span>分类：@Model.ActiveCategoryName</span>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.ActiveCategoryName) && !string.IsNullOrWhiteSpace(Model.ActiveTagName))
+                {
+                    <span class="timeline-hero-sep">·</span>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.ActiveTagName))
+                {
+                    <span>标签：#@Model.ActiveTagName</span>
+                }
+            </p>
+        }
+        else
+        {
+            <p>按发布时间纵览全部博客文章。</p>
+        }
     </div>
 </section>
 
 <section class="section-block">
     <div class="container site-container site-container-narrow">
+        <partial name="_TimelineFilters" model="Model" />
+
         @if (Model.Groups.Count == 0)
         {
             <div class="empty-state">
-                <p>暂无已发布文章。</p>
+                <p>@(hasFilter ? "当前筛选条件下暂无文章。" : "暂无已发布文章。")</p>
+                @if (hasFilter)
+                {
+                    <a class="btn btn-site-outline mt-3" asp-controller="Blog" asp-action="Timeline">查看全部</a>
+                }
             </div>
         }
         else
@@ -28,23 +56,28 @@
                         <div class="timeline-items">
                             @foreach (var article in group.Articles)
                             {
-                                <a class="timeline-item" asp-controller="Blog" asp-action="Detail" asp-route-slug="@article.Slug">
+                                <article class="timeline-item">
                                     <div class="timeline-item-date">
                                         @((article.PublishedTime ?? article.CreationTime).ToLocalTime().ToString("MM-dd"))
                                     </div>
                                     <div class="timeline-item-body">
-                                        <h3>@article.Title</h3>
+                                        <h3>
+                                            <a class="timeline-item-title" asp-controller="Blog" asp-action="Detail" asp-route-slug="@article.Slug">@article.Title</a>
+                                        </h3>
                                         <div class="timeline-item-meta">
-                                            <span>@article.CategoryName</span>
+                                            <a class="timeline-item-category"
+                                               asp-controller="Blog" asp-action="Timeline"
+                                               asp-route-category="@article.CategorySlug"
+                                               asp-route-tag="@Model.ActiveTagSlug">@article.CategoryName</a>
                                         </div>
                                     </div>
                                     @if (!string.IsNullOrWhiteSpace(article.CoverImage))
                                     {
-                                        <div class="timeline-item-cover">
+                                        <a class="timeline-item-cover" asp-controller="Blog" asp-action="Detail" asp-route-slug="@article.Slug">
                                             <img src="@article.CoverImage" alt="" loading="lazy" />
-                                        </div>
+                                        </a>
                                     }
-                                </a>
+                                </article>
                             }
                         </div>
                     </div>

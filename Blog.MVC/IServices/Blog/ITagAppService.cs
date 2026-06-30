@@ -11,6 +11,8 @@ public interface ITagAppService
 
     Task<List<TagDto>> GetListAsync(CancellationToken cancellationToken = default);
 
+    Task<List<TagDto>> GetPublishedListAsync(CancellationToken cancellationToken = default);
+
     Task<TagDto?> GetAsync(long id, CancellationToken cancellationToken = default);
 
     Task<TagDto?> GetBySlugAsync(string slug, CancellationToken cancellationToken = default);

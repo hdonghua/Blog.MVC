@@ -77,6 +77,30 @@ public class TagAppService : ITagAppService, IScopedDependency
             .ToList();
     }
 
+    public async Task<List<TagDto>> GetPublishedListAsync(CancellationToken cancellationToken = default)
+    {
+        var tags = await _tagRepository.GetListAsync(cancellationToken: cancellationToken);
+        var publishedCounts = await _dbContext.ArticleTags
+            .AsNoTracking()
+            .Where(x => x.Article.Status == ArticleStatus.Published)
+            .GroupBy(x => x.TagId)
+            .Select(x => new { TagId = x.Key, Count = x.Count() })
+            .ToDictionaryAsync(x => x.TagId, x => x.Count, cancellationToken);
+
+        return tags
+            .Select(x => new TagDto
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Slug = x.Slug,
+                ArticleCount = publishedCounts.GetValueOrDefault(x.Id)
+            })
+            .Where(x => x.ArticleCount > 0)
+            .OrderByDescending(x => x.ArticleCount)
+            .ThenBy(x => x.Name)
+            .ToList();
+    }
+
     public async Task<TagDto?> GetAsync(long id, CancellationToken cancellationToken = default)
     {
         var tag = await _tagRepository.FindAsync(id, cancellationToken);

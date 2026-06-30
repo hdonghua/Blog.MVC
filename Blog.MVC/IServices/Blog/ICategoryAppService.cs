@@ -11,7 +11,11 @@ public interface ICategoryAppService
 
     Task<List<CategoryDto>> GetListAsync(CancellationToken cancellationToken = default);
 
+    Task<List<CategoryDto>> GetPublishedListAsync(CancellationToken cancellationToken = default);
+
     Task<CategoryDto?> GetAsync(long id, CancellationToken cancellationToken = default);
+
+    Task<CategoryDto?> GetBySlugAsync(string slug, CancellationToken cancellationToken = default);
 
     Task CreateAsync(CreateCategoryDto input, CancellationToken cancellationToken = default);
 

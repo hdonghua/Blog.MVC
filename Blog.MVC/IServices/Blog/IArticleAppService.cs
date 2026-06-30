@@ -15,9 +15,7 @@ public interface IArticleAppService
 
     Task<PagedResult<ArticleListDto>> GetPublishedPagedListAsync(int page = 1, int pageSize = PaginationHelper.DefaultPageSize, CancellationToken cancellationToken = default);
 
-    Task<List<ArticleListDto>> GetPublishedListAsync(CancellationToken cancellationToken = default);
-
-    Task<List<ArticleListDto>> GetPublishedListByTagSlugAsync(string tagSlug, CancellationToken cancellationToken = default);
+    Task<List<ArticleListDto>> GetPublishedListAsync(string? categorySlug = null, string? tagSlug = null, CancellationToken cancellationToken = default);
 
     Task<ArticleDetailDto?> GetPublishedBySlugAsync(string slug, CancellationToken cancellationToken = default);
 

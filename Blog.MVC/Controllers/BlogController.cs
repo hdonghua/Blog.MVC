@@ -12,15 +12,18 @@ public class BlogController : Controller
     private readonly IArticleAppService _articleAppService;
     private readonly ICommentAppService _commentAppService;
     private readonly ITagAppService _tagAppService;
+    private readonly ICategoryAppService _categoryAppService;
 
     public BlogController(
         IArticleAppService articleAppService,
         ICommentAppService commentAppService,
-        ITagAppService tagAppService)
+        ITagAppService tagAppService,
+        ICategoryAppService categoryAppService)
     {
         _articleAppService = articleAppService;
         _commentAppService = commentAppService;
         _tagAppService = tagAppService;
+        _categoryAppService = categoryAppService;
     }
 
     [HttpGet]
@@ -132,7 +135,7 @@ public class BlogController : Controller
             return NotFound();
         }
 
-        var articles = await _articleAppService.GetPublishedListByTagSlugAsync(slug, cancellationToken);
+        var articles = await _articleAppService.GetPublishedListAsync(tagSlug: slug, cancellationToken: cancellationToken);
         return View(new TagArticlesViewModel
         {
             Tag = tag,
@@ -141,9 +144,30 @@ public class BlogController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Timeline(CancellationToken cancellationToken)
+    public async Task<IActionResult> Timeline(string? category, string? tag, CancellationToken cancellationToken)
     {
-        var articles = await _articleAppService.GetPublishedListAsync(cancellationToken);
+        CategoryDto? activeCategory = null;
+        TagDto? activeTag = null;
+
+        if (!string.IsNullOrWhiteSpace(category))
+        {
+            activeCategory = await _categoryAppService.GetBySlugAsync(category, cancellationToken);
+            if (activeCategory == null)
+            {
+                return NotFound();
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(tag))
+        {
+            activeTag = await _tagAppService.GetBySlugAsync(tag, cancellationToken);
+            if (activeTag == null)
+            {
+                return NotFound();
+            }
+        }
+
+        var articles = await _articleAppService.GetPublishedListAsync(category, tag, cancellationToken);
         var groups = articles
             .GroupBy(x => (x.PublishedTime ?? x.CreationTime).ToLocalTime().ToString("yyyy年M月"))
             .Select(g => new TimelineGroupViewModel
@@ -153,7 +177,16 @@ public class BlogController : Controller
             })
             .ToList();
 
-        return View(new TimelineViewModel { Groups = groups });
+        return View(new TimelineViewModel
+        {
+            Groups = groups,
+            Categories = await _categoryAppService.GetPublishedListAsync(cancellationToken),
+            Tags = await _tagAppService.GetPublishedListAsync(cancellationToken),
+            ActiveCategorySlug = activeCategory?.Slug,
+            ActiveCategoryName = activeCategory?.Name,
+            ActiveTagSlug = activeTag?.Slug,
+            ActiveTagName = activeTag?.Name
+        });
     }
 
     private static string? FindCommentNickName(IEnumerable<CommentDto> comments, long commentId)
