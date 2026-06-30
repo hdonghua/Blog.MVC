@@ -33,15 +33,13 @@
                 <div class="article-card-tags mt-3">
                     @foreach (var tag in Model.Article.Tags)
                     {
-                        <span class="article-tag">#@tag</span>
+                        <partial name="_ArticleTagLink" model="tag" />
                     }
                 </div>
             }
         </header>
 
-        <div class="article-content markdown-body">
-            @Html.Raw(Model.HtmlContent)
-        </div>
+        <partial name="_EditorMdPreview" model="Model.Article.Content" />
 
         <partial name="_CommentsSection" model="Model" />
 
@@ -51,6 +49,12 @@
     </div>
 </article>
 
+@section Styles {
+    <link rel="stylesheet" href="~/lib/editor.md/css/editormd.preview.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site-editormd.css" asp-append-version="true" />
+}
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <partial name="_EditorMdPreviewScripts" model="Model.Article.Content" />
 }

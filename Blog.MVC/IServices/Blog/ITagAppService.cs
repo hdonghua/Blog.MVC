@@ -13,6 +13,8 @@ public interface ITagAppService
 
     Task<TagDto?> GetAsync(long id, CancellationToken cancellationToken = default);
 
+    Task<TagDto?> GetBySlugAsync(string slug, CancellationToken cancellationToken = default);
+
     Task CreateAsync(CreateTagDto input, CancellationToken cancellationToken = default);
 
     Task UpdateAsync(UpdateTagDto input, CancellationToken cancellationToken = default);

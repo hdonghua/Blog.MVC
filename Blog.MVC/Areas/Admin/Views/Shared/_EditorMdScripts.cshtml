@@ -44,6 +44,12 @@
             onload: function () {
                 // CodeMirror 主题在 onload 时才注入，覆盖样式须在其后加载
                 loadEditorMdOverrides();
+            },
+            onfullscreen: function () {
+                document.body.classList.add('admin-editor-fullscreen');
+            },
+            onfullscreenExit: function () {
+                document.body.classList.remove('admin-editor-fullscreen');
             }
         });
 

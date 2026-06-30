@@ -95,6 +95,25 @@ public class TagAppService : ITagAppService, IScopedDependency
         };
     }
 
+    public async Task<TagDto?> GetBySlugAsync(string slug, CancellationToken cancellationToken = default)
+    {
+        var tag = await _tagRepository.FindAsync(x => x.Slug == slug, cancellationToken: cancellationToken);
+        if (tag == null)
+        {
+            return null;
+        }
+
+        var articleCount = await _dbContext.ArticleTags
+            .CountAsync(x => x.TagId == tag.Id, cancellationToken);
+        return new TagDto
+        {
+            Id = tag.Id,
+            Name = tag.Name,
+            Slug = tag.Slug,
+            ArticleCount = articleCount
+        };
+    }
+
     public async Task CreateAsync(CreateTagDto input, CancellationToken cancellationToken = default)
     {
         var slug = SlugHelper.Generate(input.Slug ?? input.Name, "tag");

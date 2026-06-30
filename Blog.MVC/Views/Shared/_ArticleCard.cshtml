@@ -22,7 +22,7 @@
             <div class="article-card-tags">
                 @foreach (var tag in Model.Tags)
                 {
-                    <span class="article-tag">@tag</span>
+                    <partial name="_ArticleTagLink" model="tag" />
                 }
             </div>
         }

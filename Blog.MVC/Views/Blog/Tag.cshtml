@@ -1,0 +1,32 @@
+@model TagArticlesViewModel
+@{
+    ViewData["Title"] = $"标签：{Model.Tag.Name}";
+}
+
+<section class="page-hero">
+    <div class="container site-container">
+        <h1>#@Model.Tag.Name</h1>
+        <p>共 @Model.Articles.Count 篇相关文章</p>
+    </div>
+</section>
+
+<section class="section-block">
+    <div class="container site-container">
+        @if (Model.Articles.Count == 0)
+        {
+            <div class="empty-state">
+                <p>该标签下暂无已发布文章。</p>
+                <a class="btn btn-site-outline mt-3" asp-controller="Blog" asp-action="Timeline">返回时间线</a>
+            </div>
+        }
+        else
+        {
+            <div class="article-list">
+                @foreach (var article in Model.Articles)
+                {
+                    <partial name="_ArticleRow" model="article" />
+                }
+            </div>
+        }
+    </div>
+</section>

@@ -30,7 +30,7 @@ public class PaginationViewModel
     {
         var routes = routeValues != null
             ? new Dictionary<string, object?>(routeValues)
-            : new Dictionary<string, object?>();
+            : [];
 
         return new PaginationViewModel
         {

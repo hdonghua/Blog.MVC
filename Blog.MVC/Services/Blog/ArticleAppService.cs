@@ -47,7 +47,7 @@ public class ArticleAppService : IArticleAppService, IScopedDependency
                 ViewCount = x.ViewCount,
                 PublishedTime = x.PublishedTime,
                 CreationTime = x.CreationTime,
-                Tags = x.ArticleTags.Select(t => t.Tag.Name).ToList()
+                Tags = x.ArticleTags.Select(t => new ArticleTagBriefDto { Name = t.Tag.Name, Slug = t.Tag.Slug }).ToList()
             })
             .ToListAsync(cancellationToken);
 
@@ -84,7 +84,7 @@ public class ArticleAppService : IArticleAppService, IScopedDependency
                 ViewCount = x.ViewCount,
                 PublishedTime = x.PublishedTime,
                 CreationTime = x.CreationTime,
-                Tags = x.ArticleTags.Select(t => t.Tag.Name).ToList()
+                Tags = x.ArticleTags.Select(t => new ArticleTagBriefDto { Name = t.Tag.Name, Slug = t.Tag.Slug }).ToList()
             })
             .ToListAsync(cancellationToken);
     }
@@ -120,7 +120,7 @@ public class ArticleAppService : IArticleAppService, IScopedDependency
             ViewCount = article.ViewCount,
             PublishedTime = article.PublishedTime,
             TagIds = article.ArticleTags.Select(x => x.TagId).ToList(),
-            Tags = article.ArticleTags.Select(x => x.Tag!.Name).ToList()
+            Tags = article.ArticleTags.Select(x => new ArticleTagBriefDto { Name = x.Tag!.Name, Slug = x.Tag.Slug }).ToList()
         };
     }
 
@@ -149,6 +149,15 @@ public class ArticleAppService : IArticleAppService, IScopedDependency
     public async Task<List<ArticleListDto>> GetPublishedListAsync(CancellationToken cancellationToken = default)
     {
         return await PublishedArticlesQuery()
+            .OrderByDescending(x => x.PublishedTime ?? x.CreationTime)
+            .Select(x => MapToListDto(x))
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<List<ArticleListDto>> GetPublishedListByTagSlugAsync(string tagSlug, CancellationToken cancellationToken = default)
+    {
+        return await PublishedArticlesQuery()
+            .Where(x => x.ArticleTags.Any(at => at.Tag!.Slug == tagSlug))
             .OrderByDescending(x => x.PublishedTime ?? x.CreationTime)
             .Select(x => MapToListDto(x))
             .ToListAsync(cancellationToken);
@@ -185,7 +194,7 @@ public class ArticleAppService : IArticleAppService, IScopedDependency
             ViewCount = article.ViewCount,
             PublishedTime = article.PublishedTime,
             TagIds = article.ArticleTags.Select(x => x.TagId).ToList(),
-            Tags = article.ArticleTags.Select(x => x.Tag!.Name).ToList()
+            Tags = article.ArticleTags.Select(x => new ArticleTagBriefDto { Name = x.Tag!.Name, Slug = x.Tag.Slug }).ToList()
         };
     }
 
@@ -302,7 +311,7 @@ public class ArticleAppService : IArticleAppService, IScopedDependency
         CommentCount = x.Comments.Count(c => c.Status == 1),
         PublishedTime = x.PublishedTime,
         CreationTime = x.CreationTime,
-        Tags = x.ArticleTags.Select(t => t.Tag!.Name).ToList()
+        Tags = x.ArticleTags.Select(t => new ArticleTagBriefDto { Name = t.Tag!.Name, Slug = t.Tag.Slug }).ToList()
     };
 
     private async Task<string> EnsureUniqueArticleSlugAsync(

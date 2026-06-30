@@ -288,7 +288,6 @@ body.site-body {
     align-items: center;
     padding: 1.15rem 0;
     border-bottom: 1px solid var(--site-border);
-    text-decoration: none;
     color: inherit;
     transition: background 0.15s;
 }
@@ -297,7 +296,13 @@ body.site-body {
     background: rgba(0, 0, 0, 0.02);
 }
 
-.article-row:hover .article-row-title {
+.article-row-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+.article-row-link:hover .article-row-title {
     color: var(--site-accent);
 }
 
@@ -308,6 +313,7 @@ body.site-body {
     border-radius: var(--site-radius);
     overflow: hidden;
     border: 1px solid var(--site-border);
+    text-decoration: none;
 }
 
 .article-row-cover img {
@@ -366,7 +372,7 @@ body.site-body {
 .article-row-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.4rem;
+    gap: 0.35rem;
     justify-content: flex-end;
     margin-left: auto;
 }
@@ -380,6 +386,12 @@ body.site-body {
 .article-tag {
     font-size: 0.75rem;
     color: var(--site-text-muted);
+    text-decoration: none;
+    transition: color 0.15s;
+}
+
+a.article-tag:hover {
+    color: var(--site-accent);
 }
 
 @media (max-width: 640px) {
@@ -580,14 +592,18 @@ body.site-body {
 }
 
 .article-detail-cover {
-    margin: 0 0 1.75rem;
+    margin: 0 0 1.25rem;
+    border-radius: var(--site-radius);
+    overflow: hidden;
+    border: 1px solid var(--site-border);
 }
 
 .article-detail-cover img {
     width: 100%;
+    max-height: 260px;
     display: block;
-    border-radius: var(--site-radius);
-    border: 1px solid var(--site-border);
+    object-fit: cover;
+    object-position: center;
 }
 
 .article-detail-header {
@@ -912,9 +928,26 @@ body.site-body {
     color: var(--site-text);
 }
 
-.site-footer-copy {
-    font-size: 0.78rem;
+.site-footer-meta {
+    margin-top: 0.35rem;
+    font-size: 0.72rem;
     color: var(--site-text-muted);
+}
+
+.site-footer-meta a {
+    color: var(--site-text-muted);
+    text-decoration: none;
+}
+
+.site-footer-meta a:hover {
+    color: var(--site-text);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.site-footer-sep {
+    margin: 0 0.35rem;
+    opacity: 0.6;
 }
 
 /* ── 评论 ── */

@@ -17,6 +17,8 @@ public interface IArticleAppService
 
     Task<List<ArticleListDto>> GetPublishedListAsync(CancellationToken cancellationToken = default);
 
+    Task<List<ArticleListDto>> GetPublishedListByTagSlugAsync(string tagSlug, CancellationToken cancellationToken = default);
+
     Task<ArticleDetailDto?> GetPublishedBySlugAsync(string slug, CancellationToken cancellationToken = default);
 
     Task IncrementViewCountAsync(long id, CancellationToken cancellationToken = default);

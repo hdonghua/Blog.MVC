@@ -1,0 +1,21 @@
+@using System.Text.Json
+@model string
+
+<script src="~/lib/editor.md/lib/marked.min.js" asp-append-version="true"></script>
+<script src="~/lib/editor.md/lib/prettify.min.js" asp-append-version="true"></script>
+<script src="~/lib/editor.md/editormd.min.js" asp-append-version="true"></script>
+<script>
+    $(function () {
+        editormd.markdownToHTML("article-markdown-view", {
+            markdown: @Html.Raw(JsonSerializer.Serialize(Model)),
+            htmlDecode: "style,script,iframe",
+            emoji: true,
+            taskList: true,
+            toc: false,
+            tex: false,
+            flowChart: false,
+            sequenceDiagram: false,
+            previewCodeHighlight: true
+        });
+    });
+</script>

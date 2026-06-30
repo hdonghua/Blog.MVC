@@ -33,15 +33,22 @@
         </div>
         <div class="mb-3">
             <label class="form-label">标签</label>
-            <div class="border rounded p-3 bg-light">
-                @foreach (var tag in Model.Tags)
-                {
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="SelectedTagIds" value="@tag.Id"
-                               id="tag-@tag.Id" @(Model.SelectedTagIds.Contains(tag.Id) ? "checked" : "") />
-                        <label class="form-check-label" for="tag-@tag.Id">@tag.Name</label>
-                    </div>
-                }
+            <div class="tag-picker" id="tagPicker">
+                <input type="search" class="form-control form-control-sm tag-picker-search" placeholder="搜索标签…" autocomplete="off" />
+                <div class="tag-picker-list">
+                    @foreach (var tag in Model.Tags)
+                    {
+                        var selected = Model.SelectedTagIds.Contains(tag.Id);
+                        <label class="tag-picker-item@(selected ? " is-selected" : "")" data-name="@tag.Name.ToLowerInvariant()">
+                            <input class="tag-picker-input" type="checkbox" name="SelectedTagIds" value="@tag.Id"
+                                   @(selected ? "checked" : "") />
+                            <span class="tag-picker-chip">@tag.Name</span>
+                        </label>
+                    }
+                </div>
+                <div class="tag-picker-foot">
+                    <span class="tag-picker-count">已选 <strong id="tagSelectedCount">@Model.SelectedTagIds.Count</strong> 个</span>
+                </div>
             </div>
         </div>
         <div class="mb-3">
@@ -49,9 +56,22 @@
             <input asp-for="Slug" class="form-control" placeholder="留空则自动生成" />
         </div>
         <div class="mb-3">
-            <label asp-for="CoverImage" class="form-label"></label>
-            <input asp-for="CoverImage" class="form-control" placeholder="https://..." />
-            <div class="form-text">也可在 Markdown 正文中插入图片</div>
+            <label asp-for="CoverImage" class="form-label">封面图</label>
+            <div class="cover-upload" id="coverUpload">
+                <div class="cover-preview-wrap@(string.IsNullOrWhiteSpace(Model.CoverImage) ? " d-none" : "")" id="coverPreviewWrap">
+                    <img id="coverPreview" src="@Model.CoverImage" alt="封面预览" />
+                    <button type="button" class="btn btn-sm btn-outline-danger cover-remove-btn" id="coverRemoveBtn">移除</button>
+                </div>
+                <input asp-for="CoverImage" class="form-control cover-url-input" id="CoverImage" placeholder="图片 URL（可粘贴或上传）" />
+                <div class="cover-upload-actions">
+                    <label class="btn btn-outline-secondary btn-sm mb-0 cover-upload-btn">
+                        上传封面
+                        <input type="file" id="coverFileInput" accept="image/jpeg,image/png,image/gif,image/webp,image/bmp" hidden />
+                    </label>
+                    <span class="cover-upload-status" id="coverUploadStatus"></span>
+                </div>
+                <div class="form-text">支持 jpg / png / webp / gif，上传至 MinIO</div>
+            </div>
         </div>
     </div>
 </div>

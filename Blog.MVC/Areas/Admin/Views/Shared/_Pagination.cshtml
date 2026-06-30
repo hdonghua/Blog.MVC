@@ -1,16 +1,18 @@
-@using Microsoft.AspNetCore.Routing
 @functions {
-    RouteValueDictionary BuildPageRoutes(PaginationViewModel model, int page)
+    Dictionary<string, string> BuildPageRoutes(PaginationViewModel model, int page)
     {
-        var routes = new RouteValueDictionary
+        var routes = new Dictionary<string, string>
         {
-            ["page"] = page,
-            ["pageSize"] = model.PageSize
+            ["page"] = page.ToString(),
+            ["pageSize"] = model.PageSize.ToString()
         };
 
         foreach (var pair in model.RouteValues)
         {
-            routes[pair.Key] = pair.Value;
+            if (pair.Value is not null)
+            {
+                routes[pair.Key] = pair.Value.ToString()!;
+            }
         }
 
         return routes;

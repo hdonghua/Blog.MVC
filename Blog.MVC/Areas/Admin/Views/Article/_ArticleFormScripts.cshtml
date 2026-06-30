@@ -1,0 +1,107 @@
+<script>
+    $(function () {
+        const uploadUrl = '/api/File/upload?folder=covers';
+        const $coverInput = $('#CoverImage');
+        const $previewWrap = $('#coverPreviewWrap');
+        const $preview = $('#coverPreview');
+        const $status = $('#coverUploadStatus');
+        const $fileInput = $('#coverFileInput');
+
+        function setCoverPreview(url) {
+            const value = (url || '').trim();
+            if (value) {
+                $preview.attr('src', value);
+                $previewWrap.removeClass('d-none');
+            } else {
+                $preview.attr('src', '');
+                $previewWrap.addClass('d-none');
+            }
+        }
+
+        function setCoverStatus(text, isError) {
+            $status.text(text || '').toggleClass('text-danger', !!isError);
+        }
+
+        $coverInput.on('input change', function () {
+            setCoverPreview($(this).val());
+            setCoverStatus('');
+        });
+
+        $('#coverRemoveBtn').on('click', function () {
+            $coverInput.val('');
+            setCoverPreview('');
+            $fileInput.val('');
+            setCoverStatus('');
+        });
+
+        $fileInput.on('change', async function () {
+            const file = this.files && this.files[0];
+            if (!file) {
+                return;
+            }
+
+            if (!file.type.startsWith('image/')) {
+                setCoverStatus('请选择图片文件', true);
+                this.value = '';
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+            setCoverStatus('上传中…');
+
+            try {
+                const response = await fetch(uploadUrl, {
+                    method: 'POST',
+                    body: formData,
+                    credentials: 'same-origin'
+                });
+
+                if (!response.ok) {
+                    throw new Error('上传失败');
+                }
+
+                const result = await response.json();
+                const url = result.proxyUrl || result.url;
+                if (!url) {
+                    throw new Error('未返回图片地址');
+                }
+
+                $coverInput.val(url);
+                setCoverPreview(url);
+                setCoverStatus('上传成功');
+            } catch {
+                setCoverStatus('上传失败，请检查 MinIO 配置或稍后重试', true);
+            } finally {
+                this.value = '';
+            }
+        });
+
+        const $picker = $('#tagPicker');
+        if ($picker.length) {
+            const $search = $picker.find('.tag-picker-search');
+            const $items = $picker.find('.tag-picker-item');
+            const $count = $('#tagSelectedCount');
+
+            function updateTagCount() {
+                $count.text($picker.find('.tag-picker-input:checked').length);
+            }
+
+            $picker.on('change', '.tag-picker-input', function () {
+                $(this).closest('.tag-picker-item').toggleClass('is-selected', this.checked);
+                updateTagCount();
+            });
+
+            $search.on('input', function () {
+                const keyword = $(this).val().toLowerCase().trim();
+                $items.each(function () {
+                    const name = $(this).data('name') || '';
+                    const match = !keyword || name.includes(keyword);
+                    $(this).toggleClass('is-hidden', !match);
+                });
+            });
+
+            updateTagCount();
+        }
+    });
+</script>

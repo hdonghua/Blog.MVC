@@ -1,0 +1,174 @@
+/* 前台文章详情 · 覆盖 Editor.md 预览样式（勿改 lib 内文件） */
+
+.article-detail .editormd-html-preview {
+    padding: 0;
+    background: transparent;
+    font-size: 0.98rem;
+    line-height: 1.85;
+    color: var(--site-text);
+    overflow: visible;
+}
+
+.article-detail .editormd-html-preview h1,
+.article-detail .editormd-html-preview h2,
+.article-detail .editormd-html-preview h3,
+.article-detail .editormd-html-preview h4 {
+    margin-top: 1.75rem;
+    margin-bottom: 0.65rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--site-text);
+    border-bottom-color: var(--site-border);
+}
+
+.article-detail .editormd-html-preview h2 {
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid var(--site-border);
+}
+
+.article-detail .editormd-html-preview p,
+.article-detail .editormd-html-preview ul,
+.article-detail .editormd-html-preview ol {
+    margin-bottom: 1rem;
+}
+
+.article-detail .editormd-html-preview a {
+    color: var(--site-accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.article-detail .editormd-html-preview img {
+    max-width: 100%;
+    border-radius: var(--site-radius-sm);
+}
+
+.article-detail .editormd-html-preview blockquote {
+    border-left: 2px solid var(--site-border-strong);
+    padding: 0.25rem 0 0.25rem 1rem;
+    color: var(--site-text-muted);
+    margin-bottom: 1rem;
+    font-style: normal;
+}
+
+/* 行内 code：去掉 editormd / github-markdown 默认边框与伪元素空格 */
+.article-detail .editormd-html-preview :not(pre) > code {
+    background: var(--site-bg-2);
+    color: var(--site-text);
+    padding: 0.1rem 0.35rem;
+    border: none;
+    border-radius: var(--site-radius-sm);
+    font-size: 0.88em;
+}
+
+.article-detail .editormd-html-preview code::before,
+.article-detail .editormd-html-preview code::after {
+    content: none;
+}
+
+/* 代码块 */
+.article-detail .editormd-html-preview pre,
+.article-detail .editormd-html-preview pre.prettyprint {
+    margin-bottom: 1rem;
+    border-radius: var(--site-radius);
+    overflow-x: auto;
+    border: 1px solid var(--site-border);
+    background: #1e1e1e;
+    padding: 1rem 1.1rem;
+    color: #d4d4d4;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    white-space: pre;
+    word-wrap: normal;
+}
+
+.article-detail .editormd-html-preview pre code,
+.article-detail .editormd-html-preview pre.prettyprint code,
+.article-detail .editormd-html-preview ol.linenums li code {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    color: inherit;
+    font-size: inherit;
+}
+
+/* Prettify 行号：取消 editormd 自带的奇数行 #eee 斑马纹 */
+.article-detail .editormd-html-preview ol.linenums {
+    margin: 0;
+    padding-left: 2.75em;
+    color: #6e7681;
+}
+
+.article-detail .editormd-html-preview ol.linenums li {
+    list-style-type: decimal;
+    background: transparent;
+    padding-left: 0.35em;
+}
+
+.article-detail .editormd-html-preview li.L0,
+.article-detail .editormd-html-preview li.L1,
+.article-detail .editormd-html-preview li.L2,
+.article-detail .editormd-html-preview li.L3,
+.article-detail .editormd-html-preview li.L4,
+.article-detail .editormd-html-preview li.L5,
+.article-detail .editormd-html-preview li.L6,
+.article-detail .editormd-html-preview li.L7,
+.article-detail .editormd-html-preview li.L8,
+.article-detail .editormd-html-preview li.L9 {
+    background: transparent;
+}
+
+/* Prettify 语法高亮（暗色代码块） */
+.article-detail .editormd-html-preview .pln { color: #d4d4d4; }
+.article-detail .editormd-html-preview .str { color: #ce9178; }
+.article-detail .editormd-html-preview .kwd { color: #569cd6; }
+.article-detail .editormd-html-preview .com { color: #6a9955; }
+.article-detail .editormd-html-preview .typ { color: #4ec9b0; }
+.article-detail .editormd-html-preview .lit { color: #b5cea8; }
+.article-detail .editormd-html-preview .pun,
+.article-detail .editormd-html-preview .opn,
+.article-detail .editormd-html-preview .clo { color: #d4d4d4; }
+.article-detail .editormd-html-preview .tag { color: #569cd6; }
+.article-detail .editormd-html-preview .atn { color: #9cdcfe; }
+.article-detail .editormd-html-preview .atv { color: #ce9178; }
+.article-detail .editormd-html-preview .dec { color: #4ec9b0; }
+.article-detail .editormd-html-preview .var { color: #9cdcfe; }
+.article-detail .editormd-html-preview .fun { color: #dcdcaa; }
+
+.article-detail .editormd-html-preview table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+    font-size: 0.92rem;
+    display: table;
+    overflow: visible;
+}
+
+.article-detail .editormd-html-preview table tr {
+    background: transparent;
+    border-top: none;
+}
+
+.article-detail .editormd-html-preview table tr:nth-child(2n) {
+    background: var(--site-bg);
+}
+
+.article-detail .editormd-html-preview th,
+.article-detail .editormd-html-preview td {
+    border: 1px solid var(--site-border);
+    padding: 0.45rem 0.65rem;
+}
+
+.article-detail .editormd-html-preview thead tr {
+    background: var(--site-bg);
+}
+
+.article-detail .editormd-html-preview th {
+    font-weight: 600;
+}
+
+.article-detail .editormd-html-preview .editormd-toc-menu,
+.article-detail .editormd-html-preview .editormd-markdown-toc {
+    display: none;
+}

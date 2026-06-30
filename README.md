@@ -10,7 +10,7 @@
 - BeaverX（模块化应用框架）
 - Entity Framework Core + MySQL
 - Bootstrap 5
-- Editor.md + Markdig
+- Editor.md
 - MinIO（对象存储，图片上传）
 
 ## 环境要求

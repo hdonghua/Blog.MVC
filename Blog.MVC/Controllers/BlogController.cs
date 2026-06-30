@@ -1,5 +1,4 @@
 using System.Text.Json;
-using Blog.MVC.Helpers;
 using Blog.MVC.IServices.Blog;
 using Blog.MVC.IServices.Blog.Dtos;
 using Blog.MVC.ViewModels.Site;
@@ -12,11 +11,16 @@ public class BlogController : Controller
     private const string GuestCookieName = "blog_comment_guest";
     private readonly IArticleAppService _articleAppService;
     private readonly ICommentAppService _commentAppService;
+    private readonly ITagAppService _tagAppService;
 
-    public BlogController(IArticleAppService articleAppService, ICommentAppService commentAppService)
+    public BlogController(
+        IArticleAppService articleAppService,
+        ICommentAppService commentAppService,
+        ITagAppService tagAppService)
     {
         _articleAppService = articleAppService;
         _commentAppService = commentAppService;
+        _tagAppService = tagAppService;
     }
 
     [HttpGet]
@@ -43,7 +47,6 @@ public class BlogController : Controller
         return View(new BlogDetailViewModel
         {
             Article = article,
-            HtmlContent = MarkdownHelper.ToHtml(article.Content),
             Comments = comments,
             CommentCount = commentCount,
             CommentForm = new PostCommentViewModel
@@ -114,10 +117,26 @@ public class BlogController : Controller
         return View("Detail", new BlogDetailViewModel
         {
             Article = article,
-            HtmlContent = MarkdownHelper.ToHtml(article.Content),
             Comments = comments,
             CommentCount = commentCount,
             CommentForm = model
+        });
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Tag(string slug, CancellationToken cancellationToken)
+    {
+        var tag = await _tagAppService.GetBySlugAsync(slug, cancellationToken);
+        if (tag == null)
+        {
+            return NotFound();
+        }
+
+        var articles = await _articleAppService.GetPublishedListByTagSlugAsync(slug, cancellationToken);
+        return View(new TagArticlesViewModel
+        {
+            Tag = tag,
+            Articles = articles
         });
     }
 

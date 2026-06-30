@@ -22,11 +22,16 @@ public class TimelineGroupViewModel
     public List<ArticleListDto> Articles { get; set; } = [];
 }
 
+public class TagArticlesViewModel
+{
+    public TagDto Tag { get; set; } = null!;
+
+    public List<ArticleListDto> Articles { get; set; } = [];
+}
+
 public class BlogDetailViewModel
 {
     public ArticleDetailDto Article { get; set; } = null!;
-
-    public string HtmlContent { get; set; } = null!;
 
     public List<CommentDto> Comments { get; set; } = [];
 

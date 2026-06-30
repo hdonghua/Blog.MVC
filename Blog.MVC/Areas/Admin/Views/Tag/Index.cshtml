@@ -1,40 +1,9 @@
 @model PagedResult<TagDto>
 @{
-    ViewData["Title"] = "标签管理";
-}
+    ViewData["Title"] = "标签管理";}
 
-<div class="page-toolbar d-flex justify-content-end">
-    <a class="btn btn-primary" asp-action="Create">新建标签</a>
-</div>
+<div class="page-toolbar d-flex justify-content-end">    <a class="btn btn-primary" asp-action="Create">新建标签</a></div>
 
-<div class="card">
-    <div class="table-responsive">
-        <table class="table table-hover mb-0 align-middle">
-            <thead class="table-light">
-                <tr>
-                    <th>名称</th>
-                    <th>别名</th>
-                    <th>文章数</th>
-                    <th class="text-end">操作</th>
-                </tr>
-            </thead>
-            <tbody>
-            @foreach (var item in Model.Items)
-            {
-                <tr>
-                    <td>@item.Name</td>
-                    <td>@item.Slug</td>
-                    <td>@item.ArticleCount</td>
-                    <td class="text-end">
-                        <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@item.Id">编辑</a>
-                        <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">删除</a>
-                    </td>
-                </tr>
-            }
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<partial name="_Pagination" model="ViewBag.Pagination" />
-
+<div class="card">    <div class="table-responsive">        <table class="table table-hover mb-0 align-middle">            <thead class="table-light">                <tr>                    <th>名称</th>                    <th>别名</th>                    <th>文章数</th>                    <th class="text-end">操作</th>                </tr>            </thead>
+            <tbody>            @foreach (var item in Model.Items)            {                <tr>                    <td>@item.Name</td>                    <td>@item.Slug</td>                    <td>@item.ArticleCount</td>                    <td class="text-end">                        <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@item.Id">编辑</a>                        <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">删除</a>                    </td>                </tr>            }            </tbody>        </table>    </div></div>
+<partial name="_Pagination" model="ViewBag.Pagination" />

@@ -66,6 +66,13 @@ public class UpdateTagDto
     public string? Slug { get; set; }
 }
 
+public class ArticleTagBriefDto
+{
+    public string Name { get; set; } = null!;
+
+    public string Slug { get; set; } = null!;
+}
+
 public class ArticleListDto
 {
     public long Id { get; set; }
@@ -92,7 +99,7 @@ public class ArticleListDto
 
     public DateTime CreationTime { get; set; }
 
-    public List<string> Tags { get; set; } = [];
+    public List<ArticleTagBriefDto> Tags { get; set; } = [];
 }
 
 public class ArticleDetailDto
@@ -125,7 +132,7 @@ public class ArticleDetailDto
 
     public List<long> TagIds { get; set; } = [];
 
-    public List<string> Tags { get; set; } = [];
+    public List<ArticleTagBriefDto> Tags { get; set; } = [];
 }
 
 public class CreateArticleDto
