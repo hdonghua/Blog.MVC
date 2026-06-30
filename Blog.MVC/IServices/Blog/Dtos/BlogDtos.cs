@@ -76,6 +76,8 @@ public class ArticleListDto
 
     public string? CoverImage { get; set; }
 
+    public string? Summary { get; set; }
+
     public string CategoryName { get; set; } = null!;
 
     public string? AuthorName { get; set; }
@@ -83,6 +85,8 @@ public class ArticleListDto
     public string Status { get; set; } = null!;
 
     public int ViewCount { get; set; }
+
+    public int CommentCount { get; set; }
 
     public DateTime? PublishedTime { get; set; }
 

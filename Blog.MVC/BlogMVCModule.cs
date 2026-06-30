@@ -6,6 +6,7 @@ using Blog.MVC.Data;
 using Blog.MVC.IServices.Storage;
 using Blog.MVC.Services.Storage;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Minio;
 
 namespace Blog.MVC
@@ -41,6 +42,8 @@ namespace Blog.MVC
             services.AddAuthorization();
 
             ConfigureMinio(services, configuration);
+
+            services.Replace(ServiceDescriptor.Singleton<IDbDriverOptionsBuilder, BlogDbDriverOptionsBuilder>());
         }
 
         private static void ConfigureMinio(IServiceCollection services, IConfiguration configuration)

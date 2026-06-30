@@ -284,6 +284,7 @@ public class ArticleAppService : IArticleAppService, IScopedDependency
             .Where(x => x.Status == ArticleStatus.Published)
             .Include(x => x.Category)
             .Include(x => x.Author)
+            .Include(x => x.Comments)
             .Include(x => x.ArticleTags)
                 .ThenInclude(x => x.Tag);
 
@@ -293,10 +294,12 @@ public class ArticleAppService : IArticleAppService, IScopedDependency
         Title = x.Title,
         Slug = x.Slug,
         CoverImage = x.CoverImage,
+        Summary = x.Summary,
         CategoryName = x.Category.Name,
         AuthorName = x.Author != null ? (x.Author.DisplayName ?? x.Author.UserName) : null,
         Status = x.Status.ToString(),
         ViewCount = x.ViewCount,
+        CommentCount = x.Comments.Count(c => c.Status == 1),
         PublishedTime = x.PublishedTime,
         CreationTime = x.CreationTime,
         Tags = x.ArticleTags.Select(t => t.Tag!.Name).ToList()

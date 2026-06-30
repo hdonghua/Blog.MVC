@@ -5,22 +5,27 @@
 
 <a class="article-row" asp-controller="Blog" asp-action="Detail" asp-route-slug="@Model.Slug">
     <div class="article-row-body">
-        <div class="article-row-meta">
-            <span class="article-category">@Model.CategoryName</span>
-            <time datetime="@((Model.PublishedTime ?? Model.CreationTime).ToString("yyyy-MM-dd"))">
-                @((Model.PublishedTime ?? Model.CreationTime).ToLocalTime().ToString("yyyy-MM-dd"))
-            </time>
-        </div>
         <h2 class="article-row-title">@Model.Title</h2>
-        @if (Model.Tags.Count > 0)
+        @if (!string.IsNullOrWhiteSpace(Model.Summary))
         {
-            <div class="article-row-tags">
-                @foreach (var tag in Model.Tags)
-                {
-                    <span class="article-tag">@tag</span>
-                }
-            </div>
+            <p class="article-row-summary">@Model.Summary</p>
         }
+        <div class="article-row-foot">
+            <div class="article-row-stats">
+                <span>@Model.ViewCount 阅读</span>
+                <span class="article-row-stat-sep">·</span>
+                <span>@Model.CommentCount 评论</span>
+            </div>
+            @if (Model.Tags.Count > 0)
+            {
+                <div class="article-row-tags">
+                    @foreach (var tag in Model.Tags)
+                    {
+                        <span class="article-tag">@tag</span>
+                    }
+                </div>
+            }
+        </div>
     </div>
     @if (hasCover)
     {
