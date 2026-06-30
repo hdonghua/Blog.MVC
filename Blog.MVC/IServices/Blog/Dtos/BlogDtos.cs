@@ -73,6 +73,17 @@ public class ArticleTagBriefDto
     public string Slug { get; set; } = null!;
 }
 
+public class ArticleSearchResultDto
+{
+    public string Title { get; set; } = null!;
+
+    public string Slug { get; set; } = null!;
+
+    public string? Summary { get; set; }
+
+    public string CategoryName { get; set; } = null!;
+}
+
 public class ArticleListDto
 {
     public long Id { get; set; }

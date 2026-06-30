@@ -172,6 +172,62 @@ public class ArticleAppService : IArticleAppService, IScopedDependency
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<List<ArticleSearchResultDto>> SearchPublishedAsync(
+        string keyword,
+        int limit = 10,
+        CancellationToken cancellationToken = default)
+    {
+        keyword = keyword.Trim();
+        if (string.IsNullOrEmpty(keyword))
+        {
+            return [];
+        }
+
+        limit = Math.Clamp(limit, 1, 30);
+        var pattern = $"%{keyword}%";
+
+        return await PublishedArticlesQuery()
+            .Where(x =>
+                EF.Functions.Like(x.Title, pattern) ||
+                (x.Summary != null && EF.Functions.Like(x.Summary, pattern)) ||
+                x.ArticleTags.Any(at => EF.Functions.Like(at.Tag!.Name, pattern)))
+            .OrderByDescending(x => x.PublishedTime ?? x.CreationTime)
+            .Take(limit)
+            .Select(x => new ArticleSearchResultDto
+            {
+                Title = x.Title,
+                Slug = x.Slug,
+                Summary = x.Summary,
+                CategoryName = x.Category.Name
+            })
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<List<ArticleListDto>> SearchPublishedArticlesAsync(
+        string keyword,
+        int limit = 30,
+        CancellationToken cancellationToken = default)
+    {
+        keyword = keyword.Trim();
+        if (string.IsNullOrEmpty(keyword))
+        {
+            return [];
+        }
+
+        limit = Math.Clamp(limit, 1, 50);
+        var pattern = $"%{keyword}%";
+
+        return await PublishedArticlesQuery()
+            .Where(x =>
+                EF.Functions.Like(x.Title, pattern) ||
+                (x.Summary != null && EF.Functions.Like(x.Summary, pattern)) ||
+                x.ArticleTags.Any(at => EF.Functions.Like(at.Tag!.Name, pattern)))
+            .OrderByDescending(x => x.PublishedTime ?? x.CreationTime)
+            .Take(limit)
+            .Select(x => MapToListDto(x))
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task<ArticleDetailDto?> GetPublishedBySlugAsync(string slug, CancellationToken cancellationToken = default)
     {
         var article = await _dbContext.Articles

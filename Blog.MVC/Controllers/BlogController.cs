@@ -26,7 +26,7 @@ public class BlogController : Controller
         _categoryAppService = categoryAppService;
     }
 
-    [HttpGet]
+    [HttpGet("/Blog/Detail/{slug}")]
     public async Task<IActionResult> Detail(string slug, long? replyTo, CancellationToken cancellationToken)
     {
         var article = await _articleAppService.GetPublishedBySlugAsync(slug, cancellationToken);
@@ -123,6 +123,36 @@ public class BlogController : Controller
             Comments = comments,
             CommentCount = commentCount,
             CommentForm = model
+        });
+    }
+
+    [HttpGet("/api/blog/search")]
+    public async Task<IActionResult> SearchApi([FromQuery] string? q, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(q))
+        {
+            return Json(Array.Empty<ArticleSearchResultDto>());
+        }
+
+        var results = await _articleAppService.SearchPublishedAsync(q, 8, cancellationToken);
+        return Json(results, new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        });
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Search([FromQuery] string? q, CancellationToken cancellationToken)
+    {
+        var query = q?.Trim() ?? string.Empty;
+        var results = string.IsNullOrEmpty(query)
+            ? []
+            : await _articleAppService.SearchPublishedArticlesAsync(query, cancellationToken: cancellationToken);
+
+        return View(new SearchViewModel
+        {
+            Query = query,
+            Results = results
         });
     }
 

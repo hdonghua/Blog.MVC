@@ -38,6 +38,17 @@
                             </ul>
                         </div>
                     </div>
+                    <form class="site-search" asp-controller="Blog" asp-action="Search" method="get" role="search">
+                        <label class="visually-hidden" for="site-search-input">搜索文章</label>
+                        <input id="site-search-input"
+                               type="search"
+                               name="q"
+                               class="site-search-input"
+                               placeholder="搜索…"
+                               autocomplete="off"
+                               data-search-url="@Url.Content("~/api/blog/search")"
+                               data-detail-path="@Url.Content("~/Blog/Detail/")" />
+                    </form>
                     <button class="navbar-toggler site-toggler ms-md-0" type="button" data-bs-toggle="collapse" data-bs-target="#siteNav"
                             aria-controls="siteNav" aria-expanded="false" aria-label="切换导航">
                         <span class="navbar-toggler-icon"></span>
@@ -75,6 +86,7 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/autocomplete.js/dist/autoComplete.min.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

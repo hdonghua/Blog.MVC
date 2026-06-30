@@ -1,0 +1,46 @@
+@model SearchViewModel
+@{
+    ViewData["Title"] = string.IsNullOrWhiteSpace(Model.Query) ? "搜索" : $"搜索：{Model.Query}";
+}
+
+<section class="page-hero">
+    <div class="container site-container">
+        <h1>搜索</h1>
+        @if (string.IsNullOrWhiteSpace(Model.Query))
+        {
+            <p>输入关键词搜索文章标题、摘要或标签。</p>
+        }
+        else
+        {
+            <p>「@Model.Query」共 @Model.Results.Count 条结果</p>
+        }
+    </div>
+</section>
+
+<section class="section-block">
+    <div class="container site-container">
+        <form class="site-search-page" asp-controller="Blog" asp-action="Search" method="get">
+            <input type="search" name="q" value="@Model.Query" class="site-search-input" placeholder="搜索文章…" autocomplete="off" />
+            <button type="submit" class="btn btn-site">搜索</button>
+        </form>
+
+        @if (!string.IsNullOrWhiteSpace(Model.Query))
+        {
+            if (Model.Results.Count == 0)
+            {
+                <div class="empty-state mt-4">
+                    <p>未找到相关文章，请换个关键词试试。</p>
+                </div>
+            }
+            else
+            {
+                <div class="article-list mt-4">
+                    @foreach (var article in Model.Results)
+                    {
+                        <partial name="_ArticleRow" model="article" />
+                    }
+                </div>
+            }
+        }
+    </div>
+</section>

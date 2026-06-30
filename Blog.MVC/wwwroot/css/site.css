@@ -51,15 +51,24 @@ body.site-body {
     z-index: 100;
     background: var(--site-surface);
     border-bottom: 1px solid var(--site-border);
+    overflow: visible;
 }
 
 .site-navbar {
-    padding: 0.85rem 0;
+    padding: 0.6rem 0;
+    overflow: visible;
+}
+
+.site-navbar .navbar,
+.site-navbar .site-container,
+.site-navbar-center {
+    overflow: visible;
 }
 
 .site-navbar .site-container {
     display: flex;
     justify-content: flex-start;
+    align-items: center;
 }
 
 .site-navbar-center {
@@ -67,6 +76,145 @@ body.site-body {
     align-items: center;
     justify-content: flex-start;
     width: 100%;
+    gap: 0.75rem 1rem;
+}
+
+.site-search {
+    position: relative;
+    margin-left: auto;
+    flex: 0 1 200px;
+    width: 200px;
+    max-width: 200px;
+    overflow: visible;
+}
+
+.site-search-input,
+.site-search .autoComplete_wrapper > input {
+    width: 100%;
+    height: 34px;
+    margin: 0;
+    padding: 0 0.65rem;
+    font-size: 0.85rem;
+    line-height: 34px;
+    color: var(--site-text);
+    background: var(--site-bg);
+    background-image: none;
+    border: 1px solid var(--site-border);
+    border-radius: var(--site-radius-sm);
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.site-search-input::placeholder,
+.site-search .autoComplete_wrapper > input::placeholder {
+    color: var(--site-text-muted);
+}
+
+.site-search-input:focus,
+.site-search .autoComplete_wrapper > input:focus {
+    border-color: var(--site-accent);
+    box-shadow: 0 0 0 2px var(--site-accent-soft);
+    color: var(--site-text);
+}
+
+.site-search-page {
+    display: flex;
+    gap: 0.65rem;
+    max-width: 520px;
+}
+
+.site-search-page .site-search-input {
+    flex: 1;
+    max-width: none;
+    height: auto;
+    line-height: 1.4;
+    padding: 0.4rem 0.65rem;
+}
+
+/* autoComplete.js 下拉：悬浮弹出，不占导航栏高度 */
+.site-search .autoComplete_wrapper {
+    display: block;
+    width: 100%;
+    position: relative;
+    overflow: visible;
+}
+
+.site-search .autoComplete_wrapper > ul,
+.site-search .site-search-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    width: 100%;
+    min-width: 240px;
+    z-index: 300;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background: var(--site-surface);
+    border: 1px solid var(--site-border);
+    border-radius: var(--site-radius-sm);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    max-height: 280px;
+    overflow-y: auto;
+}
+
+.site-search .autoComplete_wrapper > ul[hidden],
+.site-search .site-search-dropdown[hidden] {
+    display: none !important;
+}
+
+.site-search .autoComplete_wrapper > ul > li {
+    margin: 0;
+    padding: 0.55rem 0.7rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border-bottom: 1px solid var(--site-border);
+    white-space: normal;
+    list-style: none;
+}
+
+.site-search .autoComplete_wrapper > ul > li:last-child {
+    border-bottom: none;
+}
+
+.site-search .autoComplete_wrapper > ul > li:hover,
+.site-search .autoComplete_wrapper > ul > li[aria-selected="true"] {
+    background: var(--site-accent-soft);
+}
+
+.site-search-suggest-title {
+    display: block;
+    color: var(--site-text);
+}
+
+.site-search-suggest-title mark {
+    background: transparent;
+    color: var(--site-accent);
+    font-weight: 600;
+    padding: 0;
+}
+
+.site-search-suggest-meta {
+    display: block;
+    margin-top: 0.15rem;
+    font-size: 0.72rem;
+    color: var(--site-text-muted);
+}
+
+@media (max-width: 767.98px) {
+    .site-navbar-center {
+        flex-wrap: wrap;
+    }
+
+    .site-search {
+        order: 3;
+        flex: 1 1 100%;
+        width: 100%;
+        max-width: none;
+        margin-left: 0;
+    }
 }
 
 .site-navbar-group {

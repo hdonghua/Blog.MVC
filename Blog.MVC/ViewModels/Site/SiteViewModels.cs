@@ -3,6 +3,13 @@ using Blog.MVC.IServices.Blog.Dtos;
 using Blog.MVC.IServices.OpenSource.Dtos;
 
 namespace Blog.MVC.ViewModels.Site;
+public class SearchViewModel
+{
+    public string Query { get; set; } = string.Empty;
+
+    public List<ArticleListDto> Results { get; set; } = [];
+}
+
 public class HomeIndexViewModel
 {
     public List<ArticleListDto> RecentArticles { get; set; } = [];

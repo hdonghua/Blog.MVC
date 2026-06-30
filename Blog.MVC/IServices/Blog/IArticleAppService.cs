@@ -17,6 +17,10 @@ public interface IArticleAppService
 
     Task<List<ArticleListDto>> GetPublishedListAsync(string? categorySlug = null, string? tagSlug = null, CancellationToken cancellationToken = default);
 
+    Task<List<ArticleSearchResultDto>> SearchPublishedAsync(string keyword, int limit = 10, CancellationToken cancellationToken = default);
+
+    Task<List<ArticleListDto>> SearchPublishedArticlesAsync(string keyword, int limit = 30, CancellationToken cancellationToken = default);
+
     Task<ArticleDetailDto?> GetPublishedBySlugAsync(string slug, CancellationToken cancellationToken = default);
 
     Task IncrementViewCountAsync(long id, CancellationToken cancellationToken = default);
