@@ -94,7 +94,7 @@ public class FileController : BeaverXControllerBase
         => _fileAppService.DeleteAsync(objectKey, cancellationToken);
 
     /// <summary>
-    /// 通过后端代理访问 MinIO 文件，适用于 img 标签等无法携带 JWT 的场景。
+    /// 通过后端代理访问 MinIO 文件
     /// </summary>
     [AllowAnonymous]
     [HttpGet("proxy/{*objectKey}")]

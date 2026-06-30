@@ -40,6 +40,33 @@ namespace Blog.MVC.Data.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "OpenSourceProjects",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: true),
+                    RepositoryUrl = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: false),
+                    DemoUrl = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: true),
+                    Language = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true),
+                    SortOrder = table.Column<int>(type: "int", nullable: false),
+                    IsPublished = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    CreationTime = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    CreatorId = table.Column<long>(type: "bigint", nullable: true),
+                    LastModificationTime = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    LastModifierId = table.Column<long>(type: "bigint", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    DeletionTime = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    DeleterId = table.Column<long>(type: "bigint", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OpenSourceProjects", x => x.Id);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "Tags",
                 columns: table => new
                 {
@@ -153,6 +180,42 @@ namespace Blog.MVC.Data.Migrations
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
+            migrationBuilder.CreateTable(
+                name: "Comments",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    ArticleId = table.Column<long>(type: "bigint", nullable: false),
+                    ParentId = table.Column<long>(type: "bigint", nullable: true),
+                    NickName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
+                    Email = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
+                    Website = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: true),
+                    Content = table.Column<string>(type: "varchar(2000)", maxLength: 2000, nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    CreationTime = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    CreatorId = table.Column<long>(type: "bigint", nullable: true),
+                    LastModificationTime = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    LastModifierId = table.Column<long>(type: "bigint", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Comments_Articles_ArticleId",
+                        column: x => x.ArticleId,
+                        principalTable: "Articles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Comments_Comments_ParentId",
+                        column: x => x.ParentId,
+                        principalTable: "Comments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Articles_AuthorId",
                 table: "Articles",
@@ -181,6 +244,16 @@ namespace Blog.MVC.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Comments_ArticleId",
+                table: "Comments",
+                column: "ArticleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comments_ParentId",
+                table: "Comments",
+                column: "ParentId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Tags_Slug",
                 table: "Tags",
                 column: "Slug",
@@ -206,10 +279,16 @@ namespace Blog.MVC.Data.Migrations
                 name: "ArticleTags");
 
             migrationBuilder.DropTable(
-                name: "Articles");
+                name: "Comments");
+
+            migrationBuilder.DropTable(
+                name: "OpenSourceProjects");
 
             migrationBuilder.DropTable(
                 name: "Tags");
+
+            migrationBuilder.DropTable(
+                name: "Articles");
 
             migrationBuilder.DropTable(
                 name: "Categories");

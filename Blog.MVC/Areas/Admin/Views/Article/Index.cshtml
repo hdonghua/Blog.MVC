@@ -1,63 +1,10 @@
 @model PagedResult<ArticleListDto>
-@{
-    ViewData["Title"] = "文章管理";
-}
+@{    ViewData["Title"] = "文章管理";}
 
-<div class="page-toolbar d-flex justify-content-end">
-    <a class="btn btn-primary" asp-action="Create">发布文章</a>
-</div>
-
-<div class="card">
-    <div class="table-responsive">
-        <table class="table table-hover mb-0 align-middle">
-            <thead class="table-light">
-                <tr>
-                    <th>标题</th>
-                    <th>分类</th>
-                    <th>标签</th>
-                    <th>状态</th>
-                    <th>作者</th>
-                    <th>发布时间</th>
-                    <th class="text-end">操作</th>
-                </tr>
-            </thead>
-            <tbody>
-            @foreach (var article in Model.Items)
-            {
-                <tr>
-                    <td>
-                        <div class="fw-semibold">@article.Title</div>
-                        <div class="text-muted small">/@article.Slug</div>
-                    </td>
-                    <td>@article.CategoryName</td>
-                    <td>
-                        @foreach (var tag in article.Tags)
-                        {
-                            <span class="badge text-bg-light border me-1">@tag</span>
-                        }
-                    </td>
-                    <td>
-                        @if (article.Status == nameof(ArticleStatus.Published))
-                        {
-                            <span class="badge text-bg-success">已发布</span>
-                        }
-                        else
-                        {
-                            <span class="badge text-bg-secondary">草稿</span>
-                        }
-                    </td>
-                    <td>@(article.AuthorName ?? "-")</td>
-                    <td>@(article.PublishedTime?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>
-                    <td class="text-end">
-                        <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@article.Id">编辑</a>
-                        <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@article.Id">删除</a>
-                    </td>
-                </tr>
-            }
-            </tbody>
-        </table>
-    </div>
-</div>
+<div class="page-toolbar d-flex justify-content-end">    <a class="btn btn-primary" asp-action="Create">发布文章</a></div>
+<div class="card">    <div class="table-responsive">        <table class="table table-hover mb-0 align-middle">            <thead class="table-light">                <tr>                    <th>标题</th>                    <th>分类</th>                    <th>标签</th>                    <th>状态</th>                    <th>作者</th>                    <th>发布时间</th>                    <th class="text-end">操作</th>                </tr>            </thead>
+            <tbody>            @foreach (var article in Model.Items)            {                <tr>                    <td>                        <div class="fw-semibold">@article.Title</div>                        <div class="text-muted small">/@article.Slug</div>                    </td>                    <td>@article.CategoryName</td>                    <td>                        @foreach (var tag in article.Tags)                        {                            <span class="badge text-bg-light border me-1">@tag</span>                        }                    </td>                    <td>                        @if (article.Status == nameof(ArticleStatus.Published))                        {                            <span class="badge text-bg-success">已发布</span>                        }                        else                        {                            <span class="badge text-bg-secondary">草稿</span>                        }                    </td>
+                    <td>@(article.AuthorName ?? "-")</td>                    <td>@(article.PublishedTime?.ToLocalTime().ToString("yyyy-MM-dd HH:mm") ?? "-")</td>                    <td class="text-end">                        <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@article.Id">编辑</a>                        <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@article.Id">删除</a>                    </td>                </tr>            }            </tbody>        </table>    </div></div>
 
 <partial name="_Pagination" model="ViewBag.Pagination" />
 

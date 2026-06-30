@@ -2,6 +2,7 @@ using BeaverX.Core.Dependency;
 using BeaverX.Domain.Repositories;
 using Blog.MVC.Helpers;
 using Blog.MVC.Models.Blog;
+using Blog.MVC.Models.OpenSource;
 using Blog.MVC.Models.Users;
 using Blog.MVC.Services.Users;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,7 @@ public class BlogDbSeeder : IScopedDependency
     private readonly IRepository<Category> _categoryRepository;
     private readonly IRepository<Tag> _tagRepository;
     private readonly IRepository<Article> _articleRepository;
+    private readonly IRepository<OpenSourceProject> _openSourceProjectRepository;
     private readonly IPasswordHasher _passwordHasher;
 
     public BlogDbSeeder(
@@ -24,6 +26,7 @@ public class BlogDbSeeder : IScopedDependency
         IRepository<Category> categoryRepository,
         IRepository<Tag> tagRepository,
         IRepository<Article> articleRepository,
+        IRepository<OpenSourceProject> openSourceProjectRepository,
         IPasswordHasher passwordHasher)
 
     {
@@ -33,6 +36,7 @@ public class BlogDbSeeder : IScopedDependency
         _categoryRepository = categoryRepository;
         _tagRepository = tagRepository;
         _articleRepository = articleRepository;
+        _openSourceProjectRepository = openSourceProjectRepository;
         _passwordHasher = passwordHasher;
 
     }
@@ -45,6 +49,7 @@ public class BlogDbSeeder : IScopedDependency
         await SeedCategoriesAsync(cancellationToken);
         await SeedTagsAsync(cancellationToken);
         await SeedSampleArticleAsync(cancellationToken);
+        await SeedOpenSourceProjectsAsync(cancellationToken);
     }
 
 
@@ -152,5 +157,23 @@ public class BlogDbSeeder : IScopedDependency
         }
 
         await _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    private async Task SeedOpenSourceProjectsAsync(CancellationToken cancellationToken)
+    {
+        if (await _openSourceProjectRepository.AnyAsync(x => true, cancellationToken: cancellationToken))
+        {
+            return;
+        }
+
+        await _openSourceProjectRepository.InsertAsync(new OpenSourceProject
+        {
+            Name = "Blog.MVC",
+            Description = "基于 ASP.NET Core MVC 的个人博客系统，支持 Markdown 文章、分类标签与 MinIO 图片上传。",
+            RepositoryUrl = "https://github.com",
+            Language = "C#",
+            SortOrder = 1,
+            IsPublished = true
+        }, cancellationToken: cancellationToken);
     }
 }

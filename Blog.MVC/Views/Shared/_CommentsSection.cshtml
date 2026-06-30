@@ -1,0 +1,80 @@
+@model BlogDetailViewModel
+@{
+    ViewData["ArticleSlug"] = Model.Article.Slug;
+    var form = Model.CommentForm;
+}
+
+<section class="comments-section" id="comments">
+    <div class="comments-form-card" id="comment-form">
+        <h2 class="comments-form-title">发表回复</h2>
+        <p class="comments-form-hint">您的邮箱地址不会被公开。必填项已用 <span class="text-required">*</span> 标注</p>
+
+        @if (TempData["CommentPending"] is true)
+        {
+            <div class="comment-alert comment-alert--info">您的评论已提交，待审核通过后显示。</div>
+        }
+
+        @if (!ViewData.ModelState.IsValid && ViewData.ModelState.ErrorCount > 0)
+        {
+            <div class="comment-alert comment-alert--error">
+                请检查表单填写是否正确。
+            </div>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(form.ReplyToNickName))
+        {
+            <div class="comment-replying">
+                正在回复 <strong>@form.ReplyToNickName</strong>
+                <a asp-controller="Blog" asp-action="Detail" asp-route-slug="@form.Slug" asp-fragment="comment-form">取消</a>
+            </div>
+        }
+
+        <form asp-controller="Blog" asp-action="PostComment" method="post" class="comment-form">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+            <input type="hidden" asp-for="CommentForm.ArticleId" />
+            <input type="hidden" asp-for="CommentForm.Slug" />
+            <input type="hidden" asp-for="CommentForm.ParentId" />
+
+            <div class="mb-3">
+                <textarea asp-for="CommentForm.Content" class="form-control comment-textarea" rows="5" placeholder="请输入评论内容..."></textarea>
+                <span asp-validation-for="CommentForm.Content" class="text-danger"></span>
+            </div>
+
+            <div class="comment-form-row">
+                <div class="comment-form-field">
+                    <input asp-for="CommentForm.NickName" class="form-control" placeholder="昵称 *" />
+                    <span asp-validation-for="CommentForm.NickName" class="text-danger"></span>
+                </div>
+                <div class="comment-form-field">
+                    <input asp-for="CommentForm.Email" class="form-control" type="email" placeholder="邮箱 *" />
+                    <span asp-validation-for="CommentForm.Email" class="text-danger"></span>
+                </div>
+                <div class="comment-form-field">
+                    <input asp-for="CommentForm.Website" class="form-control" placeholder="网站（选填）" />
+                    <span asp-validation-for="CommentForm.Website" class="text-danger"></span>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-site-primary">发表评论</button>
+        </form>
+    </div>
+
+    <div class="comments-list-wrap">
+        <h3 class="comments-list-title">已有 @Model.CommentCount 条评论</h3>
+
+        @if (Model.Comments.Count == 0)
+        {
+            <p class="comments-empty">暂无评论，来说两句吧。</p>
+        }
+        else
+        {
+            <div class="comments-list">
+                @foreach (var comment in Model.Comments)
+                {
+                    <partial name="_CommentItem" model="comment" />
+                }
+            </div>
+        }
+    </div>
+</section>

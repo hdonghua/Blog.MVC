@@ -169,6 +169,9 @@
 .admin-content {
     min-width: 0;
     background: transparent;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 .admin-header {
@@ -199,6 +202,14 @@
 
 .admin-main {
     padding: 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.admin-main:has(.dashboard-page) {
+    padding-bottom: 2rem;
 }
 
 /* ── 文字色覆盖 ── */
@@ -254,9 +265,21 @@
     background: linear-gradient(135deg, transparent 50%, rgba(34, 211, 238, 0.08) 50%);
 }
 
+.admin-body .row.g-3 > .col-md-3:nth-child(1) .stat-card,
 .admin-body .row.g-3 > .col-md-4:nth-child(1) .stat-card { border-top-color: var(--admin-accent); }
+.admin-body .row.g-3 > .col-md-3:nth-child(2) .stat-card,
 .admin-body .row.g-3 > .col-md-4:nth-child(2) .stat-card { border-top-color: var(--admin-accent-2); }
+.admin-body .row.g-3 > .col-md-3:nth-child(3) .stat-card,
 .admin-body .row.g-3 > .col-md-4:nth-child(3) .stat-card { border-top-color: #a78bfa; }
+.admin-body .row.g-3 > .col-md-3:nth-child(4) .stat-card { border-top-color: #f59e0b; }
+
+.admin-body .stat-card--alert {
+    border-top-color: #f59e0b !important;
+}
+
+.admin-body .stat-card--alert .stat-value {
+    color: #fbbf24;
+}
 
 .admin-body .stat-card .stat-label {
     font-size: 0.65rem;
@@ -278,6 +301,60 @@
 .admin-body .panel-card {
     border-left: 3px solid var(--admin-accent);
     box-shadow: inset 3px 0 12px rgba(34, 211, 238, 0.06);
+}
+
+.dashboard-chart-card .card-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--admin-text);
+}
+
+.dashboard-chart-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+}
+
+.dashboard-page {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding-bottom: 0.5rem;
+}
+
+.dashboard-welcome-row {
+    flex-shrink: 0;
+    margin-bottom: 1.25rem;
+}
+
+.dashboard-stats-row {
+    flex-shrink: 0;
+}
+
+.dashboard-charts-row {
+    flex: none;
+    margin-top: 0.25rem;
+}
+
+.dashboard-chart-col {
+    display: block;
+}
+
+.dashboard-chart-card {
+    height: auto;
+}
+
+.dashboard-chart-card .card-body {
+    display: block;
+}
+
+.dashboard-chart-wrap {
+    position: relative;
+    height: 300px;
 }
 
 /* ── 按钮 ── */

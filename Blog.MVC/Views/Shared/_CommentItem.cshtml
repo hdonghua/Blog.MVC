@@ -1,0 +1,44 @@
+@model CommentDto
+@{
+    var initial = string.IsNullOrWhiteSpace(Model.NickName) ? "?" : Model.NickName.Trim()[0].ToString().ToUpperInvariant();
+}
+
+<div class="comment-item@(Model.ParentId.HasValue ? " comment-item--reply" : "")" id="comment-@Model.Id">
+    <div class="comment-avatar" aria-hidden="true">@initial</div>
+    <div class="comment-body">
+        <div class="comment-head">
+            @if (!string.IsNullOrWhiteSpace(Model.Website))
+            {
+                <a class="comment-author" href="@Model.Website" target="_blank" rel="noopener noreferrer nofollow">@Model.NickName</a>
+            }
+            else
+            {
+                <span class="comment-author">@Model.NickName</span>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.ReplyToNickName))
+            {
+                <span class="comment-reply-to">回复 @Model.ReplyToNickName</span>
+            }
+            <time class="comment-time" datetime="@Model.CreationTime.ToString("yyyy-MM-ddTHH:mm:ss")">
+                @Model.CreationTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm")
+            </time>
+        </div>
+        <p class="comment-content">@Model.Content</p>
+        <a class="comment-reply-link"
+           asp-controller="Blog"
+           asp-action="Detail"
+           asp-route-slug="@ViewData["ArticleSlug"]"
+           asp-route-replyTo="@Model.Id"
+           asp-fragment="comment-form">回复</a>
+
+        @if (Model.Replies.Count > 0)
+        {
+            <div class="comment-replies">
+                @foreach (var reply in Model.Replies)
+                {
+                    <partial name="_CommentItem" model="reply" />
+                }
+            </div>
+        }
+    </div>
+</div>

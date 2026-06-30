@@ -6,6 +6,13 @@
 
 <article class="article-detail">
     <div class="container site-container site-container-narrow">
+        @if (!string.IsNullOrWhiteSpace(Model.Article.CoverImage))
+        {
+            <figure class="article-detail-cover">
+                <img src="@Model.Article.CoverImage" alt="@Model.Article.Title" />
+            </figure>
+        }
+
         <header class="article-detail-header">
             <div class="article-detail-meta">
                 <span class="article-category">@Model.Article.CategoryName</span>
@@ -36,8 +43,14 @@
             @Html.Raw(Model.HtmlContent)
         </div>
 
+        <partial name="_CommentsSection" model="Model" />
+
         <footer class="article-detail-footer">
             <a class="btn btn-site-outline" asp-controller="Blog" asp-action="Timeline">← 返回时间线</a>
         </footer>
     </div>
 </article>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

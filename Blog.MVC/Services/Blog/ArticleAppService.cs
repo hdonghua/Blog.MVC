@@ -40,6 +40,7 @@ public class ArticleAppService : IArticleAppService, IScopedDependency
                 Id = x.Id,
                 Title = x.Title,
                 Slug = x.Slug,
+                CoverImage = x.CoverImage,
                 CategoryName = x.Category.Name,
                 AuthorName = x.Author != null ? (x.Author.DisplayName ?? x.Author.UserName) : null,
                 Status = x.Status.ToString(),
@@ -76,6 +77,7 @@ public class ArticleAppService : IArticleAppService, IScopedDependency
                 Id = x.Id,
                 Title = x.Title,
                 Slug = x.Slug,
+                CoverImage = x.CoverImage,
                 CategoryName = x.Category.Name,
                 AuthorName = x.Author != null ? (x.Author.DisplayName ?? x.Author.UserName) : null,
                 Status = x.Status.ToString(),
@@ -189,7 +191,7 @@ public class ArticleAppService : IArticleAppService, IScopedDependency
 
     public async Task IncrementViewCountAsync(long id, CancellationToken cancellationToken = default)
     {
-        var article = await _dbContext.Articles.FindAsync([id], cancellationToken);
+        var article = await _dbContext.Articles.FindAsync(id, cancellationToken);
         if (article == null)
         {
             return;
@@ -290,6 +292,7 @@ public class ArticleAppService : IArticleAppService, IScopedDependency
         Id = x.Id,
         Title = x.Title,
         Slug = x.Slug,
+        CoverImage = x.CoverImage,
         CategoryName = x.Category.Name,
         AuthorName = x.Author != null ? (x.Author.DisplayName ?? x.Author.UserName) : null,
         Status = x.Status.ToString(),
@@ -356,5 +359,64 @@ public class ArticleAppService : IArticleAppService, IScopedDependency
         }
 
         await _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<List<DashboardDailyStatDto>> GetPublishedDailyTrendAsync(
+        int days = 30,
+        CancellationToken cancellationToken = default)
+    {
+        if (days < 1)
+        {
+            days = 30;
+        }
+
+        var today = DateTime.UtcNow.Date;
+        var startDate = today.AddDays(-(days - 1));
+
+        var counts = await _dbContext.Articles
+            .AsNoTracking()
+            .Where(x => x.Status == ArticleStatus.Published && x.PublishedTime >= startDate)
+            .GroupBy(x => x.PublishedTime!.Value.Date)
+            .Select(g => new { Date = g.Key, Count = g.Count() })
+            .ToListAsync(cancellationToken);
+
+        var lookup = counts.ToDictionary(x => x.Date, x => x.Count);
+        var result = new List<DashboardDailyStatDto>(days);
+
+        for (var i = 0; i < days; i++)
+        {
+            var date = startDate.AddDays(i);
+            lookup.TryGetValue(date, out var count);
+            result.Add(new DashboardDailyStatDto
+            {
+                Label = date.ToString("MM-dd"),
+                Count = count
+            });
+        }
+
+        return result;
+    }
+
+    public async Task<List<DashboardArticleViewDto>> GetTopViewedArticlesAsync(
+        int top = 5,
+        CancellationToken cancellationToken = default)
+    {
+        if (top < 1)
+        {
+            top = 5;
+        }
+
+        return await _dbContext.Articles
+            .AsNoTracking()
+            .Where(x => x.Status == ArticleStatus.Published)
+            .OrderByDescending(x => x.ViewCount)
+            .ThenByDescending(x => x.PublishedTime ?? x.CreationTime)
+            .Take(top)
+            .Select(x => new DashboardArticleViewDto
+            {
+                Title = x.Title,
+                ViewCount = x.ViewCount
+            })
+            .ToListAsync(cancellationToken);
     }
 }

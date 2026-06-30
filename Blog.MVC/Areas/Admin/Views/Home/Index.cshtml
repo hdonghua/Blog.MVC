@@ -1,42 +1,210 @@
 @model DashboardViewModel
+@using System.Text.Json
 @{
     ViewData["Title"] = "仪表盘";
+    var trendLabels = JsonSerializer.Serialize(Model.PublishTrend.Select(x => x.Label));
+    var trendCounts = JsonSerializer.Serialize(Model.PublishTrend.Select(x => x.Count));
+    var topTitles = JsonSerializer.Serialize(Model.TopViewedArticles.Select(x => x.Title.Length > 18 ? x.Title[..18] + "…" : x.Title));
+    var topViews = JsonSerializer.Serialize(Model.TopViewedArticles.Select(x => x.ViewCount));
 }
 
-<div class="row g-3">
-    <div class="col-md-4">
-        <div class="card stat-card">
-            <div class="card-body position-relative">
-                <div class="stat-label">Articles</div>
-                <div class="stat-value">@Model.ArticleCount</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card stat-card">
-            <div class="card-body position-relative">
-                <div class="stat-label">Categories</div>
-                <div class="stat-value">@Model.CategoryCount</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card stat-card">
-            <div class="card-body position-relative">
-                <div class="stat-label">Tags</div>
-                <div class="stat-value">@Model.TagCount</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-12">
-        <div class="card panel-card">
-            <div class="card-body d-flex justify-content-between align-items-center flex-wrap gap-3">
-                <div>
-                    <h5 class="card-title mb-1">欢迎回来，@Model.CurrentUserName</h5>
-                    <p class="text-muted mb-0">系统就绪 · 发布 Markdown 文章，管理分类与标签。</p>
+<div class="dashboard-page">
+    <div class="row g-3 dashboard-welcome-row">
+        <div class="col-12">
+            <div class="card panel-card">
+                <div class="card-body d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div>
+                        <h5 class="card-title mb-1">欢迎回来，@Model.CurrentUserName</h5>
+                        <p class="text-muted mb-0">系统就绪 · 发布 Markdown 文章，管理分类与标签。</p>
+                    </div>
+                    <a class="btn btn-primary" asp-area="Admin" asp-controller="Article" asp-action="Create">发布文章</a>
                 </div>
-                <a class="btn btn-primary" asp-area="Admin" asp-controller="Article" asp-action="Create">发布文章</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 dashboard-stats-row">
+        <div class="col-md-3">
+            <a class="text-decoration-none" asp-area="Admin" asp-controller="Article" asp-action="Index">
+                <div class="card stat-card">
+                    <div class="card-body position-relative">
+                        <div class="stat-label">Articles</div>
+                        <div class="stat-value">@Model.ArticleCount</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a class="text-decoration-none" asp-area="Admin" asp-controller="Category" asp-action="Index">
+                <div class="card stat-card">
+                    <div class="card-body position-relative">
+                        <div class="stat-label">Categories</div>
+                        <div class="stat-value">@Model.CategoryCount</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a class="text-decoration-none" asp-area="Admin" asp-controller="Tag" asp-action="Index">
+                <div class="card stat-card">
+                    <div class="card-body position-relative">
+                        <div class="stat-label">Tags</div>
+                        <div class="stat-value">@Model.TagCount</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a class="text-decoration-none" asp-area="Admin" asp-controller="Comment" asp-action="Index">
+                <div class="card stat-card @(Model.PendingCommentCount > 0 ? "stat-card--alert" : "")">
+                    <div class="card-body position-relative">
+                        <div class="stat-label">待审核评论</div>
+                        <div class="stat-value">@Model.PendingCommentCount</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-3 dashboard-charts-row">
+        <div class="col-lg-8 dashboard-chart-col">
+            <div class="card panel-card dashboard-chart-card">
+                <div class="card-body">
+                    <div class="dashboard-chart-head">
+                        <h5 class="card-title mb-0">近 30 天发文趋势</h5>
+                        <span class="text-muted small">已发布文章 · 按 UTC 日期统计</span>
+                    </div>
+                    <div class="dashboard-chart-wrap">
+                        <canvas id="publishTrendChart" aria-label="近30天发文趋势"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 dashboard-chart-col">
+            <div class="card panel-card dashboard-chart-card">
+                <div class="card-body">
+                    <div class="dashboard-chart-head">
+                        <h5 class="card-title mb-0">阅读量 Top 5</h5>
+                        <span class="text-muted small">已发布文章</span>
+                    </div>
+                    <div class="dashboard-chart-wrap">
+                        <canvas id="topViewsChart" aria-label="阅读量Top5"></canvas>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/lib/chart.js/dist/chart.umd.min.js" asp-append-version="true"></script>
+    <script>
+        (function () {
+            const accent = '#67e8f9';
+            const accentFill = 'rgba(34, 211, 238, 0.14)';
+            const gridColor = 'rgba(103, 232, 249, 0.12)';
+            const textMuted = '#7b8ba3';
+            const barPalette = [
+                { bg: 'rgba(103, 232, 249, 0.9)', border: '#cffafe' },
+                { bg: 'rgba(56, 189, 248, 0.9)', border: '#bae6fd' },
+                { bg: 'rgba(129, 140, 248, 0.9)', border: '#c7d2fe' },
+                { bg: 'rgba(52, 211, 153, 0.9)', border: '#a7f3d0' },
+                { bg: 'rgba(232, 121, 249, 0.9)', border: '#f5d0fe' }
+            ];
+
+            Chart.defaults.color = textMuted;
+            Chart.defaults.borderColor = gridColor;
+            Chart.defaults.font.family = '"Segoe UI", "PingFang SC", sans-serif';
+
+            const trendLabels = @Html.Raw(trendLabels);
+            const trendCounts = @Html.Raw(trendCounts);
+            const topTitles = @Html.Raw(topTitles);
+            const topViews = @Html.Raw(topViews);
+
+            new Chart(document.getElementById('publishTrendChart'), {
+                type: 'line',
+                data: {
+                    labels: trendLabels,
+                    datasets: [{
+                        label: '发文数',
+                        data: trendCounts,
+                        borderColor: accent,
+                        backgroundColor: accentFill,
+                        borderWidth: 2.5,
+                        pointBackgroundColor: accent,
+                        pointBorderColor: '#ecfeff',
+                        pointBorderWidth: 1.5,
+                        pointRadius: 3,
+                        pointHoverRadius: 5,
+                        pointHoverBackgroundColor: '#a5f3fc',
+                        pointHoverBorderColor: '#ecfeff',
+                        tension: 0.35,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => `发文 ${ctx.parsed.y} 篇`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 10 }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1, precision: 0 },
+                            grid: { color: gridColor }
+                        }
+                    }
+                }
+            });
+
+            new Chart(document.getElementById('topViewsChart'), {
+                type: 'bar',
+                data: {
+                    labels: topTitles,
+                    datasets: [{
+                        label: '阅读量',
+                        data: topViews,
+                        backgroundColor: topViews.map((_, i) => barPalette[i % barPalette.length].bg),
+                        borderColor: topViews.map((_, i) => barPalette[i % barPalette.length].border),
+                        borderWidth: 1.5,
+                        borderRadius: 3,
+                        hoverBackgroundColor: topViews.map((_, i) => barPalette[i % barPalette.length].border),
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => `${ctx.parsed.x} 次阅读`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: { precision: 0 },
+                            grid: { color: gridColor }
+                        },
+                        y: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        })();
+    </script>
+}

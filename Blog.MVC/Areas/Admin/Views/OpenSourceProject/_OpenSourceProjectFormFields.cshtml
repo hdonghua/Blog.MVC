@@ -1,0 +1,36 @@
+@model OpenSourceProjectFormViewModel
+
+<div class="mb-3">
+    <label asp-for="Name" class="form-label"></label>
+    <input asp-for="Name" class="form-control" />
+    <span asp-validation-for="Name" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="Description" class="form-label"></label>
+    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+    <span asp-validation-for="Description" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="RepositoryUrl" class="form-label"></label>
+    <input asp-for="RepositoryUrl" class="form-control" placeholder="https://github.com/..." />
+    <span asp-validation-for="RepositoryUrl" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="DemoUrl" class="form-label"></label>
+    <input asp-for="DemoUrl" class="form-control" placeholder="可选" />
+    <span asp-validation-for="DemoUrl" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="Language" class="form-label"></label>
+    <input asp-for="Language" class="form-control" placeholder="如 C#、TypeScript" />
+    <span asp-validation-for="Language" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="SortOrder" class="form-label"></label>
+    <input asp-for="SortOrder" class="form-control" type="number" />
+    <span asp-validation-for="SortOrder" class="text-danger"></span>
+</div>
+<div class="mb-3 form-check">
+    <input asp-for="IsPublished" class="form-check-input" />
+    <label asp-for="IsPublished" class="form-check-label"></label>
+</div>

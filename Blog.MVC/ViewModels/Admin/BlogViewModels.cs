@@ -40,6 +40,41 @@ public class TagFormViewModel
     public string? Slug { get; set; }
 }
 
+public class OpenSourceProjectFormViewModel
+{
+    public long? Id { get; set; }
+
+    [Required(ErrorMessage = "请输入项目名称")]
+    [StringLength(100)]
+    [Display(Name = "项目名称")]
+    public string Name { get; set; } = null!;
+
+    [StringLength(500)]
+    [Display(Name = "简介")]
+    public string? Description { get; set; }
+
+    [Required(ErrorMessage = "请输入仓库地址")]
+    [Url(ErrorMessage = "仓库地址格式不正确")]
+    [StringLength(500)]
+    [Display(Name = "仓库地址")]
+    public string RepositoryUrl { get; set; } = null!;
+
+    [Url(ErrorMessage = "演示地址格式不正确")]
+    [StringLength(500)]
+    [Display(Name = "演示地址")]
+    public string? DemoUrl { get; set; }
+
+    [StringLength(50)]
+    [Display(Name = "语言/技术")]
+    public string? Language { get; set; }
+
+    [Display(Name = "排序")]
+    public int SortOrder { get; set; }
+
+    [Display(Name = "前台展示")]
+    public bool IsPublished { get; set; } = true;
+}
+
 public class ArticleFormViewModel
 {
     public long? Id { get; set; }
@@ -89,5 +124,12 @@ public class DashboardViewModel
 
     public int TagCount { get; set; }
 
+    public int PendingCommentCount { get; set; }
+
     public string CurrentUserName { get; set; } = null!;
+
+    public List<DashboardDailyStatDto> PublishTrend { get; set; } = [];
+
+    public List<DashboardArticleViewDto> TopViewedArticles { get; set; } = [];
 }
+

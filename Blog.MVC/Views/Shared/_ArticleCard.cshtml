@@ -1,6 +1,12 @@
 @model Blog.MVC.IServices.Blog.Dtos.ArticleListDto
 
 <article class="article-card">
+    @if (!string.IsNullOrWhiteSpace(Model.CoverImage))
+    {
+        <a class="article-card-cover" asp-controller="Blog" asp-action="Detail" asp-route-slug="@Model.Slug">
+            <img src="@Model.CoverImage" alt="@Model.Title" loading="lazy" />
+        </a>
+    }
     <div class="article-card-body">
         <div class="article-card-meta">
             <span class="article-category">@Model.CategoryName</span>
@@ -11,16 +17,12 @@
         <h2 class="article-card-title">
             <a asp-controller="Blog" asp-action="Detail" asp-route-slug="@Model.Slug">@Model.Title</a>
         </h2>
-        @if (!string.IsNullOrWhiteSpace(Model.AuthorName))
-        {
-            <div class="article-card-author">@Model.AuthorName</div>
-        }
         @if (Model.Tags.Count > 0)
         {
             <div class="article-card-tags">
                 @foreach (var tag in Model.Tags)
                 {
-                    <span class="article-tag">#@tag</span>
+                    <span class="article-tag">@tag</span>
                 }
             </div>
         }

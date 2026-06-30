@@ -1,6 +1,7 @@
 ﻿using BeaverX.Domain.Users;
 using BeaverX.EntityFrameworkCore.Contexts;
 using Blog.MVC.Models.Blog;
+using Blog.MVC.Models.OpenSource;
 using Blog.MVC.Models.Users;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +19,8 @@ public class BlogDbContext : BeaverXDbContext<BlogDbContext>
     public DbSet<Tag> Tags { get; set; }
     public DbSet<Article> Articles { get; set; }
     public DbSet<ArticleTag> ArticleTags { get; set; }
+    public DbSet<OpenSourceProject> OpenSourceProjects { get; set; }
+    public DbSet<Comment> Comments { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -81,6 +84,33 @@ public class BlogDbContext : BeaverXDbContext<BlogDbContext>
             entity.HasOne(x => x.Tag)
                 .WithMany(x => x.ArticleTags)
                 .HasForeignKey(x => x.TagId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<OpenSourceProject>(entity =>
+        {
+            entity.Property(x => x.Name).HasMaxLength(100);
+            entity.Property(x => x.Description).HasMaxLength(500);
+            entity.Property(x => x.RepositoryUrl).HasMaxLength(500);
+            entity.Property(x => x.DemoUrl).HasMaxLength(500);
+            entity.Property(x => x.Language).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<Comment>(entity =>
+        {
+            entity.Property(x => x.NickName).HasMaxLength(50);
+            entity.Property(x => x.Email).HasMaxLength(100);
+            entity.Property(x => x.Website).HasMaxLength(200);
+            entity.Property(x => x.Content).HasMaxLength(2000);
+
+            entity.HasOne(x => x.Article)
+                .WithMany(x => x.Comments)
+                .HasForeignKey(x => x.ArticleId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(x => x.Parent)
+                .WithMany()
+                .HasForeignKey(x => x.ParentId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
     }

@@ -42,6 +42,12 @@
                                             }
                                         </div>
                                     </div>
+                                    @if (!string.IsNullOrWhiteSpace(article.CoverImage))
+                                    {
+                                        <div class="timeline-item-cover">
+                                            <img src="@article.CoverImage" alt="" loading="lazy" />
+                                        </div>
+                                    }
                                 </a>
                             }
                         </div>

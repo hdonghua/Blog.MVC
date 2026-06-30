@@ -1,4 +1,5 @@
 using Blog.MVC.IServices.Blog;
+using Blog.MVC.IServices.OpenSource;
 using Blog.MVC.ViewModels.Site;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -9,16 +10,25 @@ namespace Blog.MVC.Controllers;
 public class HomeController : Controller
 {
     private readonly IArticleAppService _articleAppService;
+    private readonly IOpenSourceProjectAppService _openSourceProjectAppService;
 
-    public HomeController(IArticleAppService articleAppService)
+    public HomeController(
+        IArticleAppService articleAppService,
+        IOpenSourceProjectAppService openSourceProjectAppService)
     {
         _articleAppService = articleAppService;
+        _openSourceProjectAppService = openSourceProjectAppService;
     }
 
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
         var result = await _articleAppService.GetPublishedPagedListAsync(1, 6, cancellationToken);
-        return View(new HomeIndexViewModel { RecentArticles = result.Items });
+        var projects = await _openSourceProjectAppService.GetPublishedListAsync(cancellationToken);
+        return View(new HomeIndexViewModel
+        {
+            RecentArticles = result.Items,
+            OpenSourceProjects = projects
+        });
     }
 
     public IActionResult About() => View();

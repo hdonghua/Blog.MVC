@@ -74,6 +74,8 @@ public class ArticleListDto
 
     public string Slug { get; set; } = null!;
 
+    public string? CoverImage { get; set; }
+
     public string CategoryName { get; set; } = null!;
 
     public string? AuthorName { get; set; }
@@ -162,4 +164,18 @@ public class UpdateArticleDto
     public string Status { get; set; } = null!;
 
     public List<long> TagIds { get; set; } = [];
+}
+
+public class DashboardDailyStatDto
+{
+    public string Label { get; set; } = null!;
+
+    public int Count { get; set; }
+}
+
+public class DashboardArticleViewDto
+{
+    public string Title { get; set; } = null!;
+
+    public int ViewCount { get; set; }
 }

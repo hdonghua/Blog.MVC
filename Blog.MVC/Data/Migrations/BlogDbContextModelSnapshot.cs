@@ -162,6 +162,61 @@ namespace Blog.MVC.Data.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("Blog.MVC.Models.Blog.Comment", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ArticleId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("varchar(2000)");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<long?>("CreatorId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<long?>("LastModifierId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("NickName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<long?>("ParentId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Website")
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ArticleId");
+
+                    b.HasIndex("ParentId");
+
+                    b.ToTable("Comments");
+                });
+
             modelBuilder.Entity("Blog.MVC.Models.Blog.Tag", b =>
                 {
                     b.Property<long>("Id")
@@ -205,6 +260,66 @@ namespace Blog.MVC.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Tags");
+                });
+
+            modelBuilder.Entity("Blog.MVC.Models.OpenSource.OpenSourceProject", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<long?>("CreatorId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("DeleterId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("DemoUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsPublished")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Language")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<long?>("LastModifierId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("RepositoryUrl")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OpenSourceProjects");
                 });
 
             modelBuilder.Entity("Blog.MVC.Models.Users.AppUser", b =>
@@ -305,9 +420,29 @@ namespace Blog.MVC.Data.Migrations
                     b.Navigation("Tag");
                 });
 
+            modelBuilder.Entity("Blog.MVC.Models.Blog.Comment", b =>
+                {
+                    b.HasOne("Blog.MVC.Models.Blog.Article", "Article")
+                        .WithMany("Comments")
+                        .HasForeignKey("ArticleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Blog.MVC.Models.Blog.Comment", "Parent")
+                        .WithMany()
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Article");
+
+                    b.Navigation("Parent");
+                });
+
             modelBuilder.Entity("Blog.MVC.Models.Blog.Article", b =>
                 {
                     b.Navigation("ArticleTags");
+
+                    b.Navigation("Comments");
                 });
 
             modelBuilder.Entity("Blog.MVC.Models.Blog.Category", b =>

@@ -20,8 +20,18 @@ public class PaginationViewModel
 
     public string? Area { get; init; }
 
-    public static PaginationViewModel From<T>(Models.Common.PagedResult<T> result, string? controller = null, string? area = "Admin")
+    public Dictionary<string, object?> RouteValues { get; init; } = new();
+
+    public static PaginationViewModel From<T>(
+        Models.Common.PagedResult<T> result,
+        string? controller = null,
+        string? area = "Admin",
+        IDictionary<string, object?>? routeValues = null)
     {
+        var routes = routeValues != null
+            ? new Dictionary<string, object?>(routeValues)
+            : new Dictionary<string, object?>();
+
         return new PaginationViewModel
         {
             Page = result.Page,
@@ -31,7 +41,8 @@ public class PaginationViewModel
             HasPrevious = result.HasPrevious,
             HasNext = result.HasNext,
             Controller = controller,
-            Area = area
+            Area = area,
+            RouteValues = routes
         };
     }
 }

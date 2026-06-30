@@ -5,15 +5,32 @@
 
 <section class="hero-section">
     <div class="container site-container">
-        <div class="hero-card">
-            <span class="hero-badge">Personal Blog</span>
-            <h1 class="hero-title">记录代码、生活与灵感</h1>
-            <p class="hero-desc">记录技术实践、项目思考与生活片段的个人博客。</p>
-            <div class="hero-actions">
-                <a class="btn btn-site-primary" asp-controller="Blog" asp-action="Timeline">浏览时间线</a>
-                <a class="btn btn-site-outline" asp-controller="Home" asp-action="About">了解更多</a>
-            </div>
+        <h1 class="hero-title">记录代码、生活与灵感</h1>
+        <p class="hero-desc">技术实践、项目思考与生活片段。</p>
+    </div>
+</section>
+
+<section class="section-block">
+    <div class="container site-container">
+        <div class="section-head">
+            <h2>开源项目</h2>
         </div>
+
+        @if (Model.OpenSourceProjects.Count == 0)
+        {
+            <div class="empty-state">
+                <p>暂无开源项目展示。</p>
+            </div>
+        }
+        else
+        {
+            <div class="project-grid">
+                @foreach (var project in Model.OpenSourceProjects)
+                {
+                    <partial name="_OpenSourceProjectCard" model="project" />
+                }
+            </div>
+        }
     </div>
 </section>
 
@@ -32,10 +49,10 @@
         }
         else
         {
-            <div class="article-grid">
+            <div class="article-list">
                 @foreach (var article in Model.RecentArticles)
                 {
-                    <partial name="_ArticleCard" model="article" />
+                    <partial name="_ArticleRow" model="article" />
                 }
             </div>
         }

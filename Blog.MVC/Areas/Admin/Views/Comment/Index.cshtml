@@ -1,0 +1,82 @@
+@model PagedResult<CommentAdminDto>
+@{
+    ViewData["Title"] = "评论管理";
+    var pendingOnly = (bool)(ViewBag.PendingOnly ?? true);
+    var pendingCount = (int)(ViewBag.PendingCount ?? 0);
+}
+
+<div class="page-toolbar d-flex justify-content-between align-items-center flex-wrap gap-2">
+  <ul class="nav nav-pills">
+    <li class="nav-item">
+      <a class="nav-link @(pendingOnly ? "active" : "")" asp-action="Index" asp-route-pending="true">待审核 @if (pendingCount > 0) { <span class="badge bg-danger ms-1">@pendingCount</span> }</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link @(!pendingOnly ? "active" : "")" asp-action="Index" asp-route-pending="false">已通过</a>
+    </li>
+  </ul>
+</div>
+
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-hover mb-0 align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>文章</th>
+          <th>昵称</th>
+          <th>邮箱</th>
+          <th>内容</th>
+          <th>时间</th>
+          <th class="text-end">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+      @if (Model.Items.Count == 0)
+      {
+        <tr>
+          <td colspan="6" class="text-center text-muted py-4">@(pendingOnly ? "暂无待审核评论" : "暂无已通过评论")</td>
+        </tr>
+      }
+      else
+      {
+        @foreach (var item in Model.Items)
+        {
+          <tr>
+            <td>
+              <a asp-area="" asp-controller="Blog" asp-action="Detail" asp-route-slug="@item.ArticleSlug" target="_blank">@item.ArticleTitle</a>
+              @if (item.ParentId.HasValue)
+              {
+                <div class="small text-muted">回复</div>
+              }
+            </td>
+            <td>@item.NickName</td>
+            <td>@item.Email</td>
+            <td class="text-break" style="max-width: 280px;">@item.Content</td>
+            <td class="text-nowrap">@item.CreationTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
+            <td class="text-end text-nowrap">
+              @if (pendingOnly)
+              {
+                <form asp-action="Approve" method="post" class="d-inline">
+                  @Html.AntiForgeryToken()
+                  <input type="hidden" name="id" value="@item.Id" />
+                  <input type="hidden" name="pending" value="@pendingOnly.ToString().ToLowerInvariant()" />
+                  <input type="hidden" name="page" value="@Model.Page" />
+                  <button type="submit" class="btn btn-sm btn-primary">通过</button>
+                </form>
+              }
+              <form asp-action="Delete" method="post" class="d-inline" onsubmit="return confirm('确定删除这条评论？');">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@item.Id" />
+                <input type="hidden" name="pending" value="@pendingOnly.ToString().ToLowerInvariant()" />
+                <input type="hidden" name="page" value="@Model.Page" />
+                <button type="submit" class="btn btn-sm btn-outline-danger">删除</button>
+              </form>
+            </td>
+          </tr>
+        }
+      }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<partial name="_Pagination" model="ViewBag.Pagination" />

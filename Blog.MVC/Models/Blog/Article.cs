@@ -30,4 +30,6 @@ public class Article : FullAuditedEntity
     public DateTime? PublishedTime { get; set; }
 
     public ICollection<ArticleTag> ArticleTags { get; set; } = new List<ArticleTag>();
+
+    public ICollection<Comment> Comments { get; set; } = new List<Comment>();
 }
