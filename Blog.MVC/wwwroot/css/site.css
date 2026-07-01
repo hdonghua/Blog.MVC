@@ -280,6 +280,17 @@ body.site-body {
     box-shadow: none;
 }
 
+.site-nav-rss .site-rss-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #c2410c;
+}
+
+.site-nav-rss:hover .site-rss-label {
+    color: #ea580c;
+}
+
 .site-toggler {
     border-radius: var(--site-radius-sm);
     border-color: var(--site-border);

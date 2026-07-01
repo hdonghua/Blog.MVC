@@ -1,29 +1,33 @@
-﻿<!DOCTYPE html>
+﻿@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+    var action = ViewContext.RouteData.Values["action"]?.ToString();
+    var siteTitle = Configuration["Site:Title"] ?? "HBLOG";
+    var siteDescription = Configuration["Site:Description"] ?? "个人博客";
+    var icpNumber = Configuration["Site:IcpNumber"];
+    var icpUrl = Configuration["Site:IcpUrl"] ?? "https://beian.miit.gov.cn/";
+    var rssUrl = Url.Content("~/rss");
+    string NavClass(string c, string a = "Index") =>
+        controller == c && action == a ? "nav-link active" : "nav-link";
+}
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - 个人博客</title>
+    <title>@ViewData["Title"] - @siteTitle</title>
+    <link rel="alternate" type="application/rss+xml" title="@siteTitle RSS" href="@rssUrl" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     @await RenderSectionAsync("Styles", required: false)
 </head>
-@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
-@{
-    var controller = ViewContext.RouteData.Values["controller"]?.ToString();
-    var action = ViewContext.RouteData.Values["action"]?.ToString();
-    var icpNumber = Configuration["Site:IcpNumber"];
-    var icpUrl = Configuration["Site:IcpUrl"] ?? "https://beian.miit.gov.cn/";
-    string NavClass(string c, string a = "Index") =>
-        controller == c && action == a ? "nav-link active" : "nav-link";
-}
 <body class="site-body">
     <header class="site-header">
         <nav class="navbar navbar-expand-md site-navbar">
             <div class="container site-container">
                 <div class="site-navbar-center">
                     <div class="site-navbar-group">
-                        <a class="navbar-brand site-brand" asp-controller="Home" asp-action="Index">HBLOG</a>
+                        <a class="navbar-brand site-brand" asp-controller="Home" asp-action="Index">@siteTitle</a>
                         <div class="collapse navbar-collapse site-nav-collapse" id="siteNav">
                             <ul class="navbar-nav site-nav">
                                 <li class="nav-item">
@@ -34,6 +38,11 @@
                                 </li>
                                 <li class="nav-item">
                                     <a class="@NavClass("Home", "About")" asp-controller="Home" asp-action="About">关于</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link site-nav-rss" href="@rssUrl" title="RSS 订阅">
+                                        <span class="site-rss-label">RSS</span>
+                                    </a>
                                 </li>
                             </ul>
                         </div>
@@ -69,10 +78,11 @@
                     <a asp-controller="Home" asp-action="Index">首页</a>
                     <a asp-controller="Blog" asp-action="Timeline">时间线</a>
                     <a asp-controller="Home" asp-action="About">关于</a>
+                    <a href="@rssUrl">RSS 订阅</a>
                     <a asp-area="Admin" asp-controller="Account" asp-action="Login">后台</a>
                 </nav>
                 <p class="site-footer-meta mb-0">
-                    &copy; @DateTime.Now.Year HBLOG
+                    &copy; @DateTime.Now.Year @siteTitle
                     @if (!string.IsNullOrWhiteSpace(icpNumber))
                     {
                         <a href="@icpUrl" target="_blank" rel="noopener noreferrer">@icpNumber</a>

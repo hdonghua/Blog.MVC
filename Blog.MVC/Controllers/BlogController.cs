@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Blog.MVC.IServices.Blog;
 using Blog.MVC.IServices.Blog.Dtos;
+using Blog.MVC.Services.Site;
 using Blog.MVC.ViewModels.Site;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,21 +10,25 @@ namespace Blog.MVC.Controllers;
 public class BlogController : Controller
 {
     private const string GuestCookieName = "blog_comment_guest";
+    private const int RssItemLimit = 50;
     private readonly IArticleAppService _articleAppService;
     private readonly ICommentAppService _commentAppService;
     private readonly ITagAppService _tagAppService;
     private readonly ICategoryAppService _categoryAppService;
+    private readonly IConfiguration _configuration;
 
     public BlogController(
         IArticleAppService articleAppService,
         ICommentAppService commentAppService,
         ITagAppService tagAppService,
-        ICategoryAppService categoryAppService)
+        ICategoryAppService categoryAppService,
+        IConfiguration configuration)
     {
         _articleAppService = articleAppService;
         _commentAppService = commentAppService;
         _tagAppService = tagAppService;
         _categoryAppService = categoryAppService;
+        _configuration = configuration;
     }
 
     [HttpGet("/Blog/Detail/{slug}")]
@@ -63,6 +68,28 @@ public class BlogController : Controller
                 Website = guest?.Website
             }
         });
+    }
+
+    [HttpGet("/rss")]
+    public async Task<IActionResult> Rss(CancellationToken cancellationToken)
+    {
+        var result = await _articleAppService.GetPublishedPagedListAsync(1, RssItemLimit, cancellationToken);
+        var siteTitle = _configuration["Site:Title"] ?? "HBLOG";
+        var siteDescription = _configuration["Site:Description"] ?? "个人博客";
+        var siteUrl = ResolveSiteBaseUrl();
+        var feedUrl = $"{siteUrl}/rss";
+        var managingEditor = ResolveManagingEditor(siteTitle);
+
+        var feedBytes = RssFeedBuilder.Build(
+            siteTitle,
+            siteDescription,
+            siteUrl,
+            feedUrl,
+            managingEditor,
+            result.Items,
+            slug => $"{siteUrl}/Blog/Detail/{slug}");
+
+        return File(feedBytes, "application/rss+xml; charset=utf-8");
     }
 
     [HttpPost]
@@ -271,6 +298,34 @@ public class BlogController : Controller
         {
             return null;
         }
+    }
+
+    private string ResolveSiteBaseUrl()
+    {
+        var configured = _configuration["Site:BaseUrl"]?.Trim().TrimEnd('/');
+        if (!string.IsNullOrWhiteSpace(configured))
+        {
+            return configured;
+        }
+
+        return $"{Request.Scheme}://{Request.Host}";
+    }
+
+    private string? ResolveManagingEditor(string siteTitle)
+    {
+        var configured = _configuration["Site:ManagingEditor"]?.Trim();
+        if (!string.IsNullOrWhiteSpace(configured))
+        {
+            return configured;
+        }
+
+        var email = _configuration["Site:Email"]?.Trim();
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            return null;
+        }
+
+        return $"{email} ({siteTitle})";
     }
 
     private sealed class GuestCommentCookie
