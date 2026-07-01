@@ -7,8 +7,31 @@
         const uploadUrl = '/api/File/upload/editor-image?folder=articles';
         const editorMdOverrideCss = document.getElementById('admin-editormd-css-ref').href;
 
-        function loadEditorMdOverrides() {
+        function refreshEditorLayout(editor) {
+            if (!editor || typeof editor.resize !== 'function') {
+                return;
+            }
+
+            editor.resize();
+
+            if (editor.cm && typeof editor.cm.refresh === 'function') {
+                editor.cm.refresh();
+            }
+        }
+
+        function scheduleEditorLayoutRefresh(editor) {
+            requestAnimationFrame(function () {
+                requestAnimationFrame(function () {
+                    refreshEditorLayout(editor);
+                });
+            });
+        }
+
+        function loadEditorMdOverrides(onReady) {
+            const done = typeof onReady === 'function' ? onReady : function () { };
+
             if (document.getElementById('admin-editormd-overrides')) {
+                done();
                 return;
             }
 
@@ -16,7 +39,14 @@
             link.id = 'admin-editormd-overrides';
             link.rel = 'stylesheet';
             link.href = editorMdOverrideCss;
+            link.onload = done;
+            link.onerror = done;
             document.head.appendChild(link);
+
+            // 样式已缓存时 onload 可能不触发
+            if (link.sheet) {
+                done();
+            }
         }
 
         // 注意：不要写 lang: 'zh-tw'。字符串会覆盖 defaults.lang 对象，导致 toolbar 报错。
@@ -42,8 +72,20 @@
             imageFormats: ['jpg', 'jpeg', 'gif', 'png', 'bmp', 'webp'],
             imageUploadURL: uploadUrl,
             onload: function () {
+                const editor = this;
                 // CodeMirror 主题在 onload 时才注入，覆盖样式须在其后加载
-                loadEditorMdOverrides();
+                loadEditorMdOverrides(function () {
+                    // loadedDisplay 在 onload 之前已 resize，样式注入后须重新计算分栏宽度
+                    scheduleEditorLayoutRefresh(editor);
+                });
+            },
+            onresize: function () {
+                if (this.cm && typeof this.cm.refresh === 'function') {
+                    this.cm.refresh();
+                }
+            },
+            onpreviewed: function () {
+                scheduleEditorLayoutRefresh(this);
             },
             onfullscreen: function () {
                 document.body.classList.add('admin-editor-fullscreen');
@@ -52,6 +94,16 @@
                 document.body.classList.remove('admin-editor-fullscreen');
             }
         });
+
+        const editorContainer = document.getElementById('article-editor');
+        if (editorContainer && typeof ResizeObserver !== 'undefined') {
+            const layoutObserver = new ResizeObserver(function () {
+                if (articleEditor && articleEditor.state && articleEditor.state.loaded) {
+                    refreshEditorLayout(articleEditor);
+                }
+            });
+            layoutObserver.observe(editorContainer);
+        }
 
         $('form').on('submit', function () {
             if (articleEditor) {
