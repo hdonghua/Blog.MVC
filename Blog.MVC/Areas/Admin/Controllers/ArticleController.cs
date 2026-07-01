@@ -1,5 +1,6 @@
 using Blog.MVC.IServices.Blog;
 using Blog.MVC.IServices.Blog.Dtos;
+using Blog.MVC.Models.Blog;
 using Blog.MVC.Models.Common;
 using Blog.MVC.ViewModels.Admin;
 using Microsoft.AspNetCore.Authorization;
@@ -72,7 +73,7 @@ public class ArticleController : Controller
             return View(model);
         }
 
-        TempData["Success"] = "文章发布成功";
+        TempData["Success"] = model.Status == ArticleStatus.Draft ? "草稿保存成功" : "文章发布成功";
         return RedirectToAction(nameof(Index));
     }
 
