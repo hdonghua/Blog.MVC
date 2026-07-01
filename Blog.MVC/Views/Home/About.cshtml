@@ -1,52 +1,72 @@
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 @{
     ViewData["Title"] = "关于";
-    ViewData["MetaDescription"] = Configuration["Site:Description"] ?? "关于本站";
+    ViewData["MetaDescription"] = "自 2020 年起从事 .NET 开发，在此记录技术思考与生活感受。";
     ViewData["CanonicalUrl"] = Url.Action("About", "Home", null, Context.Request.Scheme);
+    var rssUrl = Url.Content("~/rss");
 }
 
 <section class="page-hero">
     <div class="container site-container">
-        <h1>关于本站</h1>
-        <p>一个温暖、简洁的个人博客空间。</p>
+        <h1>关于我</h1>
+        <p>写代码的地方，也是写自己的地方。</p>
     </div>
 </section>
 
 <section class="section-block">
     <div class="container site-container site-container-narrow">
-        <div class="about-card">
-            <h2>你好，欢迎来访 👋</h2>
+        <div class="about-card about-prose">
             <p>
-                这里是 <strong>HBLOG</strong>，一个基于 ASP.NET Core MVC 构建的个人博客。
-                我希望能在这里记录学习过程、技术实践，以及生活中值得留意的片段。
+                自 2020 年 10 月起，我开始接触程序员相关工作。从最初的不适应，到逐步熟练，再至如今在职场中游刃有余，一路走来，也曾经历过迷茫与焦虑，甚至一度萌生过转行的念头。尽管日常工作大多显得枯燥，但在日复一日的坚持中，我逐渐意识到自己内心深处对编程的热爱，并对技术有着一定的追求。
+            </p>
+            <p>这个博客，便是我在这条路上沉淀下来的一个小角落。</p>
+
+            <hr class="about-divider" />
+
+            <h2>个人标签</h2>
+            <ul>
+                <li>.NET / C# 开发者，追求简洁与务实的代码</li>
+                <li>在反复试错中找到最适合自己的方式</li>
+                <li>用文字记录思考，用输出倒逼输入</li>
+            </ul>
+
+            <hr class="about-divider" />
+
+            <h2>站点发展史</h2>
+            <p>
+                都说程序员离不开记账、清单、博客三件套，我也不例外。初次接触个人博客，我是从 WordPress 入手的。当时特别兴奋，按照网上的教程，使用宝塔面板很快便搭建成功。然而，文章尚未撰写几篇，我便将大量精力投入到更换主题上，各种花里胡哨的插件，反复尝试不同风格，直至服务器到期，也就不了了之。
             </p>
             <p>
-                本站采用简洁稳重的视觉风格，注重阅读体验与内容呈现。
-                文章内容以 Markdown 撰写，支持分类与标签管理。
+                后来，我又尝试了 Hexo 配合 GitHub 静态托管的方式，除了访问速度慢，也再次陷入了不断更换主题的循环中，总是担心自己的网站与他人雷同。
             </p>
-            <div class="about-features">
-                <div class="about-feature">
-                    <span class="about-feature-icon">✦</span>
-                    <div>
-                        <strong>技术分享</strong>
-                        <p>编程笔记、框架实践与项目总结</p>
-                    </div>
-                </div>
-                <div class="about-feature">
-                    <span class="about-feature-icon">✦</span>
-                    <div>
-                        <strong>生活随笔</strong>
-                        <p>日常思考、阅读感悟与随想记录</p>
-                    </div>
-                </div>
-                <div class="about-feature">
-                    <span class="about-feature-icon">✦</span>
-                    <div>
-                        <strong>持续更新</strong>
-                        <p>通过时间线纵览全部文章脉络</p>
-                    </div>
-                </div>
-            </div>
+            <p>
+                最终，我决心自行开发一套博客系统。初期选定的技术栈为 Next.js 与 .NET Core WebApi，前后端分离（对 Next.js 自学尝试），确实完成了开发，效果也还行。但 Next.js 在运行中内存占用过高，且需要在服务器端编译。因此，在使用一段时间后，我转向了 .NET Core MVC 方案，VibeCoding 了一套更为简洁、维护便捷且性能更优的系统，至今沿用。
+            </p>
+
+            <hr class="about-divider" />
+
+            <h2>联系我</h2>
+            <p>如果您有任何想交流的，欢迎通过以下方式找到我：</p>
+            <ul class="about-contact-list">
+                <li>GitHub：<a href="https://github.com/hdonghua" target="_blank" rel="noopener noreferrer">github.com/hdonghua</a></li>
+                <li>QQ：1491184849</li>
+                <li>邮箱：<a href="mailto:crackerwork@outlook.com">crackerwork@outlook.com</a></li>
+                <li>RSS 订阅：<a href="@rssUrl">@rssUrl</a></li>
+            </ul>
+
+            <hr class="about-divider" />
+
+            <h2>最后</h2>
+            <p>
+                搭建这个博客并没有花费太长时间，真正花时间的，是从入门至今在编程之路上的摸索与成长。与其说它是我写代码的成果，不如说是我写自己的地方。
+            </p>
+            <p>
+                往后的日子，我会在这里分享技术上的思考，也会记录生活中的感受。如果你恰好在某篇文章里找到了共鸣，或者有什么想聊的，随时都可以找我——能在茫茫网络中相遇，本身就是一种缘分。
+            </p>
+            <blockquote>
+                <p><em>Stay Hungry, Stay Foolish.</em></p>
+            </blockquote>
+            <p>我也一直提醒自己保持这份求知若渴、虚心若愚的心态，愿与读到这里的你共勉。</p>
         </div>
     </div>
 </section>

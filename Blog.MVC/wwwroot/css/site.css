@@ -1141,6 +1141,65 @@ a.article-tag:hover {
     line-height: 1.65;
 }
 
+.about-prose h2 {
+    margin-top: 0.25rem;
+}
+
+.about-prose h2:not(:first-child) {
+    margin-top: 0;
+}
+
+.about-prose ul {
+    margin: 0 0 1rem;
+    padding-left: 1.25rem;
+    color: var(--site-text);
+    line-height: 1.85;
+    font-size: 0.95rem;
+}
+
+.about-prose li + li {
+    margin-top: 0.35rem;
+}
+
+.about-prose a {
+    color: var(--site-accent);
+    text-decoration: none;
+}
+
+.about-prose a:hover {
+    color: var(--site-accent-2);
+    text-decoration: underline;
+}
+
+.about-divider {
+    margin: 1.75rem 0;
+    border: 0;
+    border-top: 1px solid var(--site-border);
+}
+
+.about-prose blockquote {
+    margin: 1.25rem 0;
+    padding: 0.75rem 1rem;
+    border-left: 3px solid var(--site-accent);
+    background: var(--site-accent-soft);
+    color: var(--site-text-muted);
+}
+
+.about-prose blockquote p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.7;
+}
+
+.about-contact-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.about-contact-list li {
+    padding-left: 0;
+}
+
 /* ── 空状态 ── */
 .empty-state {
     text-align: center;
