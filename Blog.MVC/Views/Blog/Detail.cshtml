@@ -1,6 +1,12 @@
 @model BlogDetailViewModel
 @{
     ViewData["Title"] = Model.Article.Title;
+    ViewData["MetaDescription"] = Model.Article.Summary ?? Model.Article.Title;
+    ViewData["MetaImage"] = Model.Article.CoverImage;
+    ViewData["MetaType"] = "article";
+    ViewData["CanonicalUrl"] = Url.Action("Detail", "Blog", new { slug = Model.Article.Slug }, Context.Request.Scheme);
+    ViewData["ArticlePublishedTime"] = Model.Article.PublishedTime;
+    ViewData["ArticleAuthor"] = Model.Article.AuthorName;
     var publishedAt = Model.Article.PublishedTime ?? DateTime.UtcNow;
 }
 

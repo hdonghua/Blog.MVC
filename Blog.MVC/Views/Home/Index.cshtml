@@ -1,6 +1,9 @@
 ﻿@model HomeIndexViewModel
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 @{
     ViewData["Title"] = "首页";
+    ViewData["MetaDescription"] = Configuration["Site:Description"] ?? "个人博客";
+    ViewData["CanonicalUrl"] = Url.Action("Index", "Home", null, Context.Request.Scheme);
 }
 
 <section class="hero-section">

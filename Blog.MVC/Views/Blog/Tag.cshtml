@@ -1,6 +1,8 @@
 @model TagArticlesViewModel
 @{
     ViewData["Title"] = $"标签：{Model.Tag.Name}";
+    ViewData["MetaDescription"] = $"标签「{Model.Tag.Name}」下的 {Model.Articles.Count} 篇博客文章";
+    ViewData["CanonicalUrl"] = Url.Action("Tag", "Blog", new { slug = Model.Tag.Slug }, Context.Request.Scheme);
 }
 
 <section class="page-hero">

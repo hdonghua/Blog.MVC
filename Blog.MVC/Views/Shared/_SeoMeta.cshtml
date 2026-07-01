@@ -1,0 +1,105 @@
+@using System.Text.Json
+@using Blog.MVC.Helpers
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+    var action = ViewContext.RouteData.Values["action"]?.ToString();
+    var isHome = controller == "Home" && action == "Index";
+    var siteTitle = Configuration["Site:Title"] ?? "HBLOG";
+    var siteDescription = Configuration["Site:Description"] ?? "个人博客";
+    var siteKeywords = Configuration["Site:Keywords"];
+    var baseUrl = SeoHelper.ResolveBaseUrl(Configuration, Context.Request);
+
+    var pageTitle = ViewData["Title"]?.ToString();
+    var documentTitle = SeoHelper.BuildDocumentTitle(siteTitle, siteDescription, pageTitle, isHome);
+    var metaDescription = SeoHelper.Truncate(ViewData["MetaDescription"]?.ToString() ?? siteDescription);
+    var metaKeywords = ViewData["MetaKeywords"]?.ToString() ?? siteKeywords;
+    var metaImage = ViewData["MetaImage"]?.ToString();
+    var metaType = ViewData["MetaType"]?.ToString() ?? "website";
+    var noIndex = ViewData["NoIndex"] as bool? == true;
+    var canonicalUrl = ViewData["CanonicalUrl"]?.ToString();
+    if (string.IsNullOrWhiteSpace(canonicalUrl))
+    {
+        canonicalUrl = $"{baseUrl}{Context.Request.Path}";
+    }
+
+    var ogImage = string.IsNullOrWhiteSpace(metaImage) ? null : metaImage;
+    if (!string.IsNullOrWhiteSpace(ogImage) && ogImage.StartsWith('/'))
+    {
+        ogImage = $"{baseUrl}{ogImage}";
+    }
+
+    var articlePublishedTime = ViewData["ArticlePublishedTime"] as DateTime?;
+    var articleAuthor = ViewData["ArticleAuthor"]?.ToString();
+}
+
+<title>@documentTitle</title>
+<meta name="description" content="@metaDescription" />
+@if (!string.IsNullOrWhiteSpace(metaKeywords))
+{
+    <meta name="keywords" content="@metaKeywords" />
+}
+<meta name="author" content="@siteTitle" />
+<link rel="canonical" href="@canonicalUrl" />
+@if (noIndex)
+{
+    <meta name="robots" content="noindex, nofollow" />
+}
+else
+{
+    <meta name="robots" content="index, follow" />
+}
+
+<meta property="og:locale" content="zh_CN" />
+<meta property="og:site_name" content="@siteTitle" />
+<meta property="og:title" content="@(metaType == "article" && !string.IsNullOrWhiteSpace(pageTitle) ? pageTitle : documentTitle)" />
+<meta property="og:description" content="@metaDescription" />
+<meta property="og:url" content="@canonicalUrl" />
+<meta property="og:type" content="@metaType" />
+@if (!string.IsNullOrWhiteSpace(ogImage))
+{
+    <meta property="og:image" content="@ogImage" />
+}
+
+<meta name="twitter:card" content="@(string.IsNullOrWhiteSpace(ogImage) ? "summary" : "summary_large_image")" />
+<meta name="twitter:title" content="@(metaType == "article" && !string.IsNullOrWhiteSpace(pageTitle) ? pageTitle : documentTitle)" />
+<meta name="twitter:description" content="@metaDescription" />
+@if (!string.IsNullOrWhiteSpace(ogImage))
+{
+    <meta name="twitter:image" content="@ogImage" />
+}
+
+@if (metaType == "article" && !string.IsNullOrWhiteSpace(pageTitle))
+{
+    var jsonLd = new Dictionary<string, object?>
+    {
+        ["@context"] = "https://schema.org",
+        ["@type"] = "BlogPosting",
+        ["headline"] = pageTitle,
+        ["description"] = metaDescription,
+        ["url"] = canonicalUrl,
+        ["datePublished"] = articlePublishedTime?.ToUniversalTime().ToString("o"),
+        ["publisher"] = new Dictionary<string, object?>
+        {
+            ["@type"] = "Organization",
+            ["name"] = siteTitle,
+            ["url"] = baseUrl
+        }
+    };
+
+    if (!string.IsNullOrWhiteSpace(articleAuthor))
+    {
+        jsonLd["author"] = new Dictionary<string, object?>
+        {
+            ["@type"] = "Person",
+            ["name"] = articleAuthor
+        };
+    }
+
+    if (!string.IsNullOrWhiteSpace(ogImage))
+    {
+        jsonLd["image"] = ogImage;
+    }
+
+    <script type="application/ld+json">@Html.Raw(JsonSerializer.Serialize(jsonLd))</script>
+}

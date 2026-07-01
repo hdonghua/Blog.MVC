@@ -1,5 +1,8 @@
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 @{
     ViewData["Title"] = "关于";
+    ViewData["MetaDescription"] = Configuration["Site:Description"] ?? "关于本站";
+    ViewData["CanonicalUrl"] = Url.Action("About", "Home", null, Context.Request.Scheme);
 }
 
 <section class="page-hero">

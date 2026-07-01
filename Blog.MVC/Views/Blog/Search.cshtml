@@ -1,6 +1,11 @@
 @model SearchViewModel
 @{
     ViewData["Title"] = string.IsNullOrWhiteSpace(Model.Query) ? "搜索" : $"搜索：{Model.Query}";
+    ViewData["MetaDescription"] = string.IsNullOrWhiteSpace(Model.Query)
+        ? "搜索博客文章"
+        : $"搜索「{Model.Query}」的相关博客文章";
+    ViewData["CanonicalUrl"] = Url.Action("Search", "Blog", new { q = Model.Query }, Context.Request.Scheme);
+    ViewData["NoIndex"] = !string.IsNullOrWhiteSpace(Model.Query);
 }
 
 <section class="page-hero">

@@ -1,6 +1,15 @@
 @model TimelineViewModel
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 @{
     ViewData["Title"] = "时间线";
+    ViewData["MetaDescription"] = string.IsNullOrWhiteSpace(Model.ActiveCategoryName) && string.IsNullOrWhiteSpace(Model.ActiveTagName)
+        ? "按时间浏览全部博客文章"
+        : $"浏览{(Model.ActiveCategoryName != null ? $"分类「{Model.ActiveCategoryName}」" : $"标签「{Model.ActiveTagName}」")}下的文章";
+    ViewData["CanonicalUrl"] = Url.Action("Timeline", "Blog", new
+    {
+        category = Model.ActiveCategorySlug,
+        tag = Model.ActiveTagSlug
+    }, Context.Request.Scheme);
     var hasFilter = !string.IsNullOrWhiteSpace(Model.ActiveCategoryName)
         || !string.IsNullOrWhiteSpace(Model.ActiveTagName);
 }
