@@ -56,7 +56,7 @@ public class BlogDbSeeder : IScopedDependency
 
     private async Task SeedUsersAsync(CancellationToken cancellationToken)
     {
-        if (await _userRepository.AnyAsync(x => true, cancellationToken: cancellationToken))
+        if (await _userRepository.GetCountAsync(cancellationToken: cancellationToken) > 0)
         {
             return;
         }
@@ -72,7 +72,7 @@ public class BlogDbSeeder : IScopedDependency
 
     private async Task SeedCategoriesAsync(CancellationToken cancellationToken)
     {
-        if ((await _categoryRepository.GetListAsync(cancellationToken: cancellationToken)).Count > 0)
+        if ((await _categoryRepository.GetCountAsync(cancellationToken: cancellationToken)) > 0)
         {
             return;
         }
@@ -96,7 +96,7 @@ public class BlogDbSeeder : IScopedDependency
 
     private async Task SeedTagsAsync(CancellationToken cancellationToken)
     {
-        if ((await _tagRepository.GetListAsync(cancellationToken: cancellationToken)).Count > 0)
+        if ((await _tagRepository.GetCountAsync(cancellationToken: cancellationToken)) > 0)
         {
             return;
         }
@@ -116,7 +116,7 @@ public class BlogDbSeeder : IScopedDependency
 
     private async Task SeedSampleArticleAsync(CancellationToken cancellationToken)
     {
-        if ((await _articleRepository.GetListAsync(cancellationToken: cancellationToken)).Count > 0)
+        if ((await _articleRepository.GetCountAsync(cancellationToken: cancellationToken)) > 0)
         {
             return;
         }
@@ -161,7 +161,7 @@ public class BlogDbSeeder : IScopedDependency
 
     private async Task SeedOpenSourceProjectsAsync(CancellationToken cancellationToken)
     {
-        if (await _openSourceProjectRepository.AnyAsync(x => true, cancellationToken: cancellationToken))
+        if (await _openSourceProjectRepository.GetCountAsync(cancellationToken: cancellationToken) > 0)
         {
             return;
         }
