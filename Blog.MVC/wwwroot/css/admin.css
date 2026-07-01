@@ -850,3 +850,46 @@
     font-size: 0.75rem;
     letter-spacing: 0.04em;
 }
+
+/* ── 右上角 Toast ── */
+.admin-toast-container {
+    position: fixed;
+    top: 1.25rem;
+    right: 1.25rem;
+    z-index: 200000;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.6rem;
+    pointer-events: none;
+}
+
+.admin-toast {
+    min-width: 220px;
+    max-width: min(360px, calc(100vw - 2.5rem));
+    padding: 0.75rem 1rem;
+    background: linear-gradient(135deg, rgba(15, 22, 36, 0.96) 0%, rgba(10, 16, 28, 0.98) 100%);
+    border: 1px solid var(--admin-border-strong);
+    color: var(--admin-text);
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45), 0 0 20px rgba(34, 211, 238, 0.12);
+    opacity: 0;
+    transform: translateX(1rem);
+    transition: opacity 0.28s ease, transform 0.28s ease;
+    pointer-events: auto;
+}
+
+.admin-toast.is-visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.admin-toast-success {
+    border-left: 3px solid var(--admin-success);
+}
+
+.admin-toast-error {
+    border-left: 3px solid var(--admin-danger);
+    color: #fecaca;
+}

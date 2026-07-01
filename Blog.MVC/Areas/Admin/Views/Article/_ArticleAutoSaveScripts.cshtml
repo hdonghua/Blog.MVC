@@ -1,0 +1,109 @@
+<script>
+    $(function () {
+        const $form = $('#articleForm');
+        const articleId = Number($form.data('article-id'));
+        const autosaveUrl = $form.data('autosave-url');
+        const antiforgeryToken = $('input[name="__RequestVerificationToken"]').val();
+        const autosaveIntervalMs = 10000;
+        const toastDurationMs = 3200;
+
+        if (!articleId || !autosaveUrl) {
+            return;
+        }
+
+        let lastSavedContent = null;
+        let baselineReady = false;
+        let saving = false;
+
+        function ensureToastContainer() {
+            let container = document.getElementById('admin-toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'admin-toast-container';
+                container.className = 'admin-toast-container';
+                document.body.appendChild(container);
+            }
+            return container;
+        }
+
+        function showAdminToast(message, type) {
+            const container = ensureToastContainer();
+            const toast = document.createElement('div');
+            toast.className = 'admin-toast admin-toast-' + (type || 'success');
+            toast.textContent = message;
+            container.appendChild(toast);
+
+            requestAnimationFrame(function () {
+                toast.classList.add('is-visible');
+            });
+
+            window.setTimeout(function () {
+                toast.classList.remove('is-visible');
+                window.setTimeout(function () {
+                    toast.remove();
+                }, 280);
+            }, toastDurationMs);
+        }
+
+        async function autoSaveContent(content) {
+            const response = await fetch(autosaveUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': antiforgeryToken
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify({
+                    id: articleId,
+                    content: content
+                })
+            });
+
+            if (!response.ok) {
+                let message = '自动保存失败';
+                try {
+                    const result = await response.json();
+                    if (result && result.message) {
+                        message = result.message;
+                    }
+                } catch {
+                    // ignore parse errors
+                }
+                throw new Error(message);
+            }
+
+            return response.json();
+        }
+
+        window.setInterval(async function () {
+            const editor = window.articleEditor;
+            if (!editor || !editor.state || !editor.state.loaded || saving) {
+                return;
+            }
+
+            const content = editor.getMarkdown();
+            if (!baselineReady) {
+                lastSavedContent = content;
+                baselineReady = true;
+                return;
+            }
+
+            if (content === lastSavedContent) {
+                return;
+            }
+
+            saving = true;
+            try {
+                const result = await autoSaveContent(content);
+                lastSavedContent = content;
+                $('#Content').val(content);
+                const savedAt = result && result.savedAt ? result.savedAt : '';
+                showAdminToast(savedAt ? '正文已自动保存 · ' + savedAt : '正文已自动保存');
+            } catch (error) {
+                showAdminToast(error.message || '自动保存失败', 'error');
+            } finally {
+                saving = false;
+            }
+        }, autosaveIntervalMs);
+    });
+</script>

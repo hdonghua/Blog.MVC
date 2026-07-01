@@ -29,6 +29,8 @@ public interface IArticleAppService
 
     Task UpdateAsync(UpdateArticleDto input, CancellationToken cancellationToken = default);
 
+    Task UpdateContentAsync(long id, string content, CancellationToken cancellationToken = default);
+
     Task DeleteAsync(long id, CancellationToken cancellationToken = default);
 
     Task<List<DashboardDailyStatDto>> GetPublishedDailyTrendAsync(int days = 30, CancellationToken cancellationToken = default);

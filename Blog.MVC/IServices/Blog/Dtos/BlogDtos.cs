@@ -192,6 +192,13 @@ public class UpdateArticleDto
     public List<long> TagIds { get; set; } = [];
 }
 
+public class AutoSaveArticleContentDto
+{
+    public long Id { get; set; }
+
+    public string Content { get; set; } = null!;
+}
+
 public class DashboardDailyStatDto
 {
     public string Label { get; set; } = null!;

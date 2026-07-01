@@ -5,7 +5,9 @@
 
 <div class="card">
     <div class="card-body">
-        <form asp-action="Edit" method="post">
+        <form asp-action="Edit" method="post" id="articleForm"
+              data-article-id="@Model.Id"
+              data-autosave-url="@Url.Action("AutoSaveContent", "Article", new { area = "Admin" })">
             <input type="hidden" asp-for="Id" />
             @Html.AntiForgeryToken()
             <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
@@ -22,4 +24,5 @@
     <partial name="_ValidationScriptsPartial" />
     <partial name="_EditorMdScripts" />
     <partial name="_ArticleFormScripts" />
+    <partial name="_ArticleAutoSaveScripts" />
 }

@@ -342,6 +342,15 @@ public class ArticleAppService : IArticleAppService, IScopedDependency
         await ReplaceArticleTagsAsync(article.Id, tagIds, cancellationToken);
     }
 
+    public async Task UpdateContentAsync(long id, string content, CancellationToken cancellationToken = default)
+    {
+        var article = await _articleRepository.FindAsync(id, cancellationToken)
+            ?? throw new InvalidOperationException("文章不存在");
+
+        article.Content = content;
+        await _articleRepository.UpdateAsync(article, cancellationToken: cancellationToken);
+    }
+
     public async Task DeleteAsync(long id, CancellationToken cancellationToken = default)
     {
         var links = await _dbContext.ArticleTags

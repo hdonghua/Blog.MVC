@@ -141,6 +141,30 @@ public class ArticleController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AutoSaveContent([FromBody] AutoSaveArticleContentDto input)
+    {
+        if (input.Id <= 0)
+        {
+            return BadRequest(new { message = "文章 ID 无效" });
+        }
+
+        try
+        {
+            await _articleAppService.UpdateContentAsync(input.Id, input.Content);
+            return Json(new
+            {
+                success = true,
+                savedAt = DateTime.Now.ToString("HH:mm:ss")
+            });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
     [HttpGet]
     public async Task<IActionResult> Delete(long id)
     {
